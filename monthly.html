@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>安全环境管理工作月报填报</title>
+    <!-- 引入 Supabase JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Microsoft YaHei", sans-serif; }
@@ -57,7 +58,7 @@
 
     <div class="container">
         <form id="monthlyForm">
-            <!-- 一、基础信息（匹配模板表头） -->
+            <!-- 一、基础信息 -->
             <div class="section-title">一、本月安全生产及环保工作情况概述</div>
             <div class="form-row">
                 <div class="form-group">
@@ -66,7 +67,7 @@
                 </div>
                 <div class="form-group">
                     <label>部门</label>
-                    <input type="text" id="department" placeholder="请填写所属部门">
+                    <input type="text" id="department" placeholder="请填写所属部门" required>
                 </div>
                 <div class="form-group">
                     <label>填报月份</label>
@@ -85,85 +86,85 @@
             </div>
             <div class="form-group">
                 <label>本月安全生产及环保工作情况概述</label>
-                <textarea id="workOverview" placeholder="请概述本月工作情况、成效、问题等"></textarea>
+                <textarea id="workOverview" placeholder="请概述本月工作情况、成效、问题等" required></textarea>
             </div>
 
-            <!-- 二、安全生产数据统计（匹配模板表格） -->
+            <!-- 二、安全生产数据统计 -->
             <div class="section-title">二、安全生产数据统计</div>
             <div class="form-row">
-                <div class="form-group"><label>公司项目部人员数量</label><input type="number" id="companyStaffNum" min="0" value="0"></div>
-                <div class="form-group"><label>承包商管理人员数量</label><input type="number" id="contractorManageNum" min="0" value="0"></div>
-                <div class="form-group"><label>承包商施工人员数量</label><input type="number" id="contractorWorkerNum" min="0" value="0"></div>
-                <div class="form-group"><label>专职安全管理人员数量</label><input type="number" id="fullTimeSafetyNum" min="0" value="0"></div>
+                <div class="form-group"><label>公司项目部人员数量</label><input type="number" id="companyStaffNum" min="0" value="0" required></div>
+                <div class="form-group"><label>承包商管理人员数量</label><input type="number" id="contractorManageNum" min="0" value="0" required></div>
+                <div class="form-group"><label>承包商施工人员数量</label><input type="number" id="contractorWorkerNum" min="0" value="0" required></div>
+                <div class="form-group"><label>专职安全管理人员数量</label><input type="number" id="fullTimeSafetyNum" min="0" value="0" required></div>
             </div>
             <div class="form-row">
-                <div class="form-group"><label>兼职安全管理人员数量</label><input type="number" id="partTimeSafetyNum" min="0" value="0"></div>
-                <div class="form-group"><label>重大危险源数量</label><input type="number" id="majorHazardCount" min="0" value="0"></div>
-                <div class="form-group"><label>重要危险源数量</label><input type="number" id="importantHazardCount" min="0" value="0"></div>
-                <div class="form-group"><label>安全生产奖励人数</label><input type="number" id="rewardPersonNum" min="0" value="0"></div>
+                <div class="form-group"><label>兼职安全管理人员数量</label><input type="number" id="partTimeSafetyNum" min="0" value="0" required></div>
+                <div class="form-group"><label>重大危险源数量</label><input type="number" id="majorHazardCount" min="0" value="0" required></div>
+                <div class="form-group"><label>重要危险源数量</label><input type="number" id="importantHazardCount" min="0" value="0" required></div>
+                <div class="form-group"><label>安全生产奖励人数</label><input type="number" id="rewardPersonNum" min="0" value="0" required></div>
             </div>
             <div class="form-row">
-                <div class="form-group"><label>安全生产奖励金额（万元）</label><input type="number" id="rewardAmount" min="0" step="0.01" value="0"></div>
-                <div class="form-group"><label>安全生产处罚人数</label><input type="number" id="punishPersonNum" min="0" value="0"></div>
-                <div class="form-group"><label>安全生产处罚金额（万元）</label><input type="number" id="punishAmount" min="0" step="0.01" value="0"></div>
-                <div class="form-group"><label>安全生产培训次数</label><input type="number" id="trainingCount" min="0" value="0"></div>
+                <div class="form-group"><label>安全生产奖励金额（万元）</label><input type="number" id="rewardAmount" min="0" step="0.01" value="0" required></div>
+                <div class="form-group"><label>安全生产处罚人数</label><input type="number" id="punishPersonNum" min="0" value="0" required></div>
+                <div class="form-group"><label>安全生产处罚金额（万元）</label><input type="number" id="punishAmount" min="0" step="0.01" value="0" required></div>
+                <div class="form-group"><label>安全生产培训次数</label><input type="number" id="trainingCount" min="0" value="0" required></div>
             </div>
             <div class="form-group">
                 <label>安全生产培训内容、形式、日期</label>
-                <textarea id="trainingContent" placeholder="例：2026-03-10 消防安全培训（线下），2026-03-20 高处作业培训（线上）"></textarea>
+                <textarea id="trainingContent" placeholder="例：2026-03-10 消防安全培训（线下），2026-03-20 高处作业培训（线上）" required></textarea>
             </div>
             <div class="form-row">
-                <div class="form-group"><label>培训覆盖人数</label><input type="number" id="trainingCoverNum" min="0" value="0"></div>
-                <div class="form-group"><label>安全应急演练次数</label><input type="number" id="drillCount" min="0" value="0"></div>
-                <div class="form-group"><label>应急演练覆盖人数</label><input type="number" id="drillCoverNum" min="0" value="0"></div>
-                <div class="form-group"><label>承包商安全处罚次数</label><input type="number" id="contractorPunishCount" min="0" value="0"></div>
+                <div class="form-group"><label>培训覆盖人数</label><input type="number" id="trainingCoverNum" min="0" value="0" required></div>
+                <div class="form-group"><label>安全应急演练次数</label><input type="number" id="drillCount" min="0" value="0" required></div>
+                <div class="form-group"><label>应急演练覆盖人数</label><input type="number" id="drillCoverNum" min="0" value="0" required></div>
+                <div class="form-group"><label>承包商安全处罚次数</label><input type="number" id="contractorPunishCount" min="0" value="0" required></div>
             </div>
             <div class="form-group">
                 <label>应急演练内容、形式、日期</label>
-                <textarea id="drillContent" placeholder="例：2026-03-15 触电应急演练（现场实操）"></textarea>
+                <textarea id="drillContent" placeholder="例：2026-03-15 触电应急演练（现场实操）" required></textarea>
             </div>
             <div class="form-group">
                 <label>承包商安全处罚金额（万元）</label>
-                <input type="number" id="contractorPunishAmount" min="0" step="0.01" value="0">
+                <input type="number" id="contractorPunishAmount" min="0" step="0.01" value="0" required>
             </div>
 
-            <!-- 三、事故情况（匹配模板） -->
+            <!-- 三、事故情况 -->
             <div class="section-title">三、事故情况</div>
             <div class="form-row">
-                <div class="form-group"><label>未遂事件起数</label><input type="number" id="nearMissCount" min="0" value="0"></div>
-                <div class="form-group"><label>轻伤事故起数</label><input type="number" id="lightInjuryCount" min="0" value="0"></div>
-                <div class="form-group"><label>轻伤事故人数</label><input type="number" id="lightInjuryPerson" min="0" value="0"></div>
-                <div class="form-group"><label>重伤事故起数</label><input type="number" id="severeInjuryCount" min="0" value="0"></div>
+                <div class="form-group"><label>未遂事件起数</label><input type="number" id="nearMissCount" min="0" value="0" required></div>
+                <div class="form-group"><label>轻伤事故起数</label><input type="number" id="lightInjuryCount" min="0" value="0" required></div>
+                <div class="form-group"><label>轻伤事故人数</label><input type="number" id="lightInjuryPerson" min="0" value="0" required></div>
+                <div class="form-group"><label>重伤事故起数</label><input type="number" id="severeInjuryCount" min="0" value="0" required></div>
             </div>
             <div class="form-row">
-                <div class="form-group"><label>重伤事故人数</label><input type="number" id="severeInjuryPerson" min="0" value="0"></div>
-                <div class="form-group"><label>工亡事故起数</label><input type="number" id="deathCount" min="0" value="0"></div>
-                <div class="form-group"><label>工亡事故人数</label><input type="number" id="deathPerson" min="0" value="0"></div>
-                <div class="form-group"><label>安全生产费用投入（万元）</label><input type="number" id="safetyInputAmount" min="0" step="0.01" value="0"></div>
+                <div class="form-group"><label>重伤事故人数</label><input type="number" id="severeInjuryPerson" min="0" value="0" required></div>
+                <div class="form-group"><label>工亡事故起数</label><input type="number" id="deathCount" min="0" value="0" required></div>
+                <div class="form-group"><label>工亡事故人数</label><input type="number" id="deathPerson" min="0" value="0" required></div>
+                <div class="form-group"><label>安全生产费用投入（万元）</label><input type="number" id="safetyInputAmount" min="0" step="0.01" value="0" required></div>
             </div>
             <div class="form-group">
                 <label>安全责任书签订数量</label>
-                <input type="number" id="contractSignedCount" min="0" value="0">
+                <input type="number" id="contractSignedCount" min="0" value="0" required>
             </div>
 
-            <!-- 四、突出贡献（匹配模板） -->
+            <!-- 四、突出贡献 -->
             <div class="section-title">四、突出贡献情况</div>
             <div class="form-group">
                 <label>安全环保管理创新、科技兴安突出成果</label>
-                <textarea id="innovation" placeholder="请填写创新成果、技术应用等"></textarea>
+                <textarea id="innovation" placeholder="请填写创新成果、技术应用等" required></textarea>
             </div>
             <div class="form-group">
                 <label>应急处置、抢险救灾贡献情况</label>
-                <textarea id="emergencyContribution" placeholder="请填写应急处置案例、贡献等"></textarea>
+                <textarea id="emergencyContribution" placeholder="请填写应急处置案例、贡献等" required></textarea>
             </div>
 
-            <!-- 五、安全问题（匹配模板） -->
+            <!-- 五、安全问题 -->
             <div class="section-title">五、本月主要存在的安全问题</div>
             <div class="form-group">
-                <textarea id="safetyProblem" placeholder="请填写本月存在的安全隐患、管理问题等"></textarea>
+                <textarea id="safetyProblem" placeholder="请填写本月存在的安全隐患、管理问题等" required></textarea>
             </div>
 
-            <!-- 附表1：重大、重要危险源清单（匹配模板） -->
+            <!-- 附表1：重大、重要危险源清单 -->
             <div class="section-title">附表1：重大、重要危险源清单</div>
             <div class="table-box">
                 <table id="attachment1Table">
@@ -177,18 +178,18 @@
                     <tbody>
                         <tr>
                             <td>1</td>
-                            <td><input type="text" class="att1" placeholder="填写单位"></td>
+                            <td><input type="text" class="att1" placeholder="填写单位" required></td>
                             <td>
-                                <select class="att1">
+                                <select class="att1" required>
                                     <option value="">请选择</option>
                                     <option value="第一类危险源">第一类危险源</option>
                                     <option value="第二类危险源">第二类危险源</option>
                                 </select>
                             </td>
-                            <td><input type="text" class="att1" placeholder="填写场所"></td>
-                            <td><input type="text" class="att1" placeholder="填写因素"></td>
+                            <td><input type="text" class="att1" placeholder="填写场所" required></td>
+                            <td><input type="text" class="att1" placeholder="填写因素" required></td>
                             <td>
-                                <select class="att1">
+                                <select class="att1" required>
                                     <option value="">请选择</option>
                                     <option value="车辆伤害">车辆伤害</option>
                                     <option value="物体打击">物体打击</option>
@@ -213,9 +214,9 @@
                                     <option value="辐射">辐射</option>
                                 </select>
                             </td>
-                            <td><input type="text" class="att1" placeholder="填写措施"></td>
-                            <td><input type="date" class="att1"></td>
-                            <td><input type="text" class="att1" placeholder="填写姓名"></td>
+                            <td><input type="text" class="att1" placeholder="填写措施" required></td>
+                            <td><input type="date" class="att1" required></td>
+                            <td><input type="text" class="att1" placeholder="填写姓名" required></td>
                             <td><button type="button" class="del-btn" onclick="delRow('attachment1Table', this)">删除</button></td>
                         </tr>
                     </tbody>
@@ -223,7 +224,7 @@
             </div>
             <div class="table-btn"><button type="button" class="add-btn" onclick="addRow('attachment1Table', 'att1')">新增一行</button></div>
 
-            <!-- 附表2：隐患排查治理台账（匹配模板） -->
+            <!-- 附表2：隐患排查治理台账 -->
             <div class="section-title">附表2：安全生产隐患排查治理信息统计表</div>
             <div class="table-box">
                 <table id="attachment2Table">
@@ -239,12 +240,12 @@
                     <tbody>
                         <tr>
                             <td>1</td>
-                            <td><input type="text" class="att2" placeholder="填写单位"></td>
-                            <td><input type="text" class="att2" placeholder="填写项目部"></td>
-                            <td><input type="text" class="att2" placeholder="填写姓名"></td>
-                            <td><input type="text" class="att2" placeholder="填写人员"></td>
+                            <td><input type="text" class="att2" placeholder="填写单位" required></td>
+                            <td><input type="text" class="att2" placeholder="填写项目部" required></td>
+                            <td><input type="text" class="att2" placeholder="填写姓名" required></td>
+                            <td><input type="text" class="att2" placeholder="填写人员" required></td>
                             <td>
-                                <select class="att2">
+                                <select class="att2" required>
                                     <option value="">请选择</option>
                                     <option value="日常检查">日常检查</option>
                                     <option value="专项检查">专项检查</option>
@@ -252,11 +253,11 @@
                                     <option value="季节性检查">季节性检查</option>
                                 </select>
                             </td>
-                            <td><input type="date" class="att2"></td>
-                            <td><input type="text" class="att2" placeholder="填写描述"></td>
-                            <td><input type="text" class="att2" placeholder="填写原因"></td>
+                            <td><input type="date" class="att2" required></td>
+                            <td><input type="text" class="att2" placeholder="填写描述" required></td>
+                            <td><input type="text" class="att2" placeholder="填写原因" required></td>
                             <td>
-                                <select class="att2">
+                                <select class="att2" required>
                                     <option value="">请选择</option>
                                     <option value="管理隐患">管理隐患</option>
                                     <option value="车辆伤害">车辆伤害</option>
@@ -289,21 +290,21 @@
                                     <option value="重大隐患">重大隐患</option>
                                 </select>
                             </td>
-                            <td><input type="text" class="att2" placeholder="填写单位"></td>
+                            <td><input type="text" class="att2" placeholder="填写单位" required></td>
                             <td><input type="text" class="att2" placeholder="填写姓名" required></td>
                             <td><input type="date" class="att2" required></td>
-                            <td><input type="number" class="att2" min="0" step="0.01" value="0"></td>
-                            <td><input type="text" class="att2" placeholder="填写描述"></td>
+                            <td><input type="number" class="att2" min="0" step="0.01" value="0" required></td>
+                            <td><input type="text" class="att2" placeholder="填写描述" required></td>
                             <td>
-                                <select class="att2">
+                                <select class="att2" required>
                                     <option value="false">否</option>
                                     <option value="true">是</option>
                                 </select>
                             </td>
-                            <td><input type="text" class="att2" placeholder="填写姓名"></td>
-                            <td><input type="date" class="att2"></td>
-                            <td><input type="text" class="att2" placeholder="填写方式"></td>
-                            <td><input type="date" class="att2"></td>
+                            <td><input type="text" class="att2" placeholder="填写姓名" required></td>
+                            <td><input type="date" class="att2" required></td>
+                            <td><input type="text" class="att2" placeholder="填写方式" required></td>
+                            <td><input type="date" class="att2" required></td>
                             <td><button type="button" class="del-btn" onclick="delRow('attachment2Table', this)">删除</button></td>
                         </tr>
                     </tbody>
@@ -311,7 +312,7 @@
             </div>
             <div class="table-btn"><button type="button" class="add-btn" onclick="addRow('attachment2Table', 'att2')">新增一行</button></div>
 
-            <!-- 附表3：相关方安全信息（匹配模板） -->
+            <!-- 附表3：相关方安全信息 -->
             <div class="section-title">附表3：相关方安全信息统计表</div>
             <div class="table-box">
                 <table id="attachment3Table">
@@ -327,35 +328,35 @@
                         <tr>
                             <td>1</td>
                             <td><input type="text" class="att3" placeholder="填写名称" required></td>
-                            <td><input type="number" class="att3" min="0" step="0.01" value="0"></td>
-                            <td><input type="date" class="att3"></td>
-                            <td><input type="number" class="att3" min="0" value="0"></td>
-                            <td><input type="number" class="att3" min="0" value="0"></td>
-                            <td><input type="text" class="att3" placeholder="填写姓名"></td>
+                            <td><input type="number" class="att3" min="0" step="0.01" value="0" required></td>
+                            <td><input type="date" class="att3" required></td>
+                            <td><input type="number" class="att3" min="0" value="0" required></td>
+                            <td><input type="number" class="att3" min="0" value="0" required></td>
+                            <td><input type="text" class="att3" placeholder="填写姓名" required></td>
                             <td>
-                                <select class="att3">
+                                <select class="att3" required>
                                     <option value="false">否</option>
                                     <option value="true">是</option>
                                 </select>
                             </td>
-                            <td><input type="text" class="att3" placeholder="填写姓名"></td>
+                            <td><input type="text" class="att3" placeholder="填写姓名" required></td>
                             <td>
-                                <select class="att3">
+                                <select class="att3" required>
                                     <option value="false">否</option>
                                     <option value="true">是</option>
                                 </select>
                             </td>
-                            <td><input type="text" class="att3" placeholder="填写姓名"></td>
+                            <td><input type="text" class="att3" placeholder="填写姓名" required></td>
                             <td>
-                                <select class="att3">
+                                <select class="att3" required>
                                     <option value="false">否</option>
                                     <option value="true">是</option>
                                 </select>
                             </td>
-                            <td><input type="text" class="att3" placeholder="填写姓名"></td>
-                            <td><input type="text" class="att3" placeholder="填写姓名"></td>
-                            <td><input type="text" class="att3" placeholder="填写姓名"></td>
-                            <td><input type="date" class="att3"></td>
+                            <td><input type="text" class="att3" placeholder="填写姓名" required></td>
+                            <td><input type="text" class="att3" placeholder="填写姓名" required></td>
+                            <td><input type="text" class="att3" placeholder="填写姓名" required></td>
+                            <td><input type="date" class="att3" required></td>
                             <td><button type="button" class="del-btn" onclick="delRow('attachment3Table', this)">删除</button></td>
                         </tr>
                     </tbody>
@@ -363,7 +364,7 @@
             </div>
             <div class="table-btn"><button type="button" class="add-btn" onclick="addRow('attachment3Table', 'att3')">新增一行</button></div>
 
-            <!-- 附表4：风险管控清单（匹配模板） -->
+            <!-- 附表4：风险管控清单 -->
             <div class="section-title">附表4：项目安全风险管控清单</div>
             <div class="table-box">
                 <table id="attachment4Table">
@@ -378,12 +379,12 @@
                     <tbody>
                         <tr>
                             <td>1</td>
-                            <td><input type="text" class="att4" placeholder="填写单位"></td>
-                            <td><input type="text" class="att4" placeholder="填写部位"></td>
-                            <td><input type="text" class="att4" placeholder="填写内容"></td>
-                            <td><input type="text" class="att4" placeholder="填写描述"></td>
+                            <td><input type="text" class="att4" placeholder="填写单位" required></td>
+                            <td><input type="text" class="att4" placeholder="填写部位" required></td>
+                            <td><input type="text" class="att4" placeholder="填写内容" required></td>
+                            <td><input type="text" class="att4" placeholder="填写描述" required></td>
                             <td>
-                                <select class="att4">
+                                <select class="att4" required>
                                     <option value="">请选择</option>
                                     <option value="设备风险">设备风险</option>
                                     <option value="作业风险">作业风险</option>
@@ -399,18 +400,18 @@
                                     <option value="重大风险">重大风险</option>
                                 </select>
                             </td>
-                            <td><input type="text" class="att4" placeholder="填写时间"></td>
+                            <td><input type="text" class="att4" placeholder="填写时间" required></td>
                             <td>
-                                <select class="att4">
+                                <select class="att4" required>
                                     <option value="false">否</option>
                                     <option value="true">是</option>
                                 </select>
                             </td>
-                            <td><input type="text" class="att4" placeholder="填写依据"></td>
+                            <td><input type="text" class="att4" placeholder="填写依据" required></td>
                             <td><input type="text" class="att4" placeholder="填写措施" required></td>
-                            <td><input type="text" class="att4" placeholder="填写单位"></td>
-                            <td><input type="text" class="att4" placeholder="填写姓名"></td>
-                            <td><input type="text" class="att4" placeholder="填写姓名"></td>
+                            <td><input type="text" class="att4" placeholder="填写单位" required></td>
+                            <td><input type="text" class="att4" placeholder="填写姓名" required></td>
+                            <td><input type="text" class="att4" placeholder="填写姓名" required></td>
                             <td><button type="button" class="del-btn" onclick="delRow('attachment4Table', this)">删除</button></td>
                         </tr>
                     </tbody>
@@ -418,7 +419,7 @@
             </div>
             <div class="table-btn"><button type="button" class="add-btn" onclick="addRow('attachment4Table', 'att4')">新增一行</button></div>
 
-            <!-- 附表5：工作照片/附件（匹配模板） -->
+            <!-- 附表5：工作照片/附件 -->
             <div class="section-title">附表5：安全管理工作照片/附件</div>
             <div class="table-box">
                 <table id="attachment5Table">
@@ -431,8 +432,8 @@
                         <tr>
                             <td>1</td>
                             <td><input type="text" class="att5" placeholder="填写名称" required></td>
-                            <td><input type="file" class="att5-file" accept="image/*,.pdf,.doc,.docx"></td>
-                            <td><input type="date" class="att5" value="2026-03-05"></td>
+                            <td><input type="file" class="att5-file" accept="image/*,.pdf,.doc,.docx" required></td>
+                            <td><input type="date" class="att5" required></td>
                             <td><button type="button" class="del-btn" onclick="delRow('attachment5Table', this)">删除</button></td>
                         </tr>
                     </tbody>
@@ -449,18 +450,34 @@
     </div>
 
     <script>
-        // Supabase配置（替换为你的信息）
+        // ========== 主要改动1：修复 Supabase 客户端初始化 ==========
+        // 正确解构 createClient 方法，避免变量名冲突
         const SUPABASE_URL = "https://zmbxpsbxxjrsdzyvtiyi.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_7zW8CxAae1sFTxNLqaSjTA_nkCkzD8T";
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // 解构 createClient 方法
+        const { createClient } = window.supabase;
+        // 正确初始化客户端
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let currentUser = null;
 
-        // 页面加载验证登录
+        // ========== 主要改动2：优化页面加载的异常处理 ==========
+        // 页面加载验证登录，增加 try-catch 防止解析失败
         window.onload = () => {
-            const userStr = localStorage.getItem('currentUser');
-            if (!userStr) { window.location.href = 'login.html'; return; }
-            currentUser = JSON.parse(userStr);
-            document.getElementById('projectName').value = currentUser.project_name;
+            try {
+                const userStr = localStorage.getItem('currentUser');
+                if (!userStr) { 
+                    window.location.href = 'login.html'; 
+                    return; 
+                }
+                // 增加 JSON 解析的异常捕获
+                currentUser = JSON.parse(userStr);
+                document.getElementById('projectName').value = currentUser.project_name || '';
+            } catch (err) {
+                console.error('用户信息解析失败：', err);
+                alert('登录状态异常，请重新登录');
+                localStorage.removeItem('currentUser');
+                window.location.href = 'login.html';
+            }
         };
 
         // 退出登录
@@ -469,7 +486,8 @@
             window.location.href = 'login.html';
         }
 
-        // 新增表格行
+        // ========== 主要改动3：优化新增行的重置逻辑 ==========
+        // 新增表格行，按输入框类型重置默认值
         function addRow(tableId, className) {
             const table = document.getElementById(tableId);
             const tbody = table.querySelector('tbody');
@@ -477,22 +495,51 @@
             const newRow = lastRow.cloneNode(true);
             const serialNum = tbody.children.length + 1;
             
-            // 重置输入值
+            // 重置序号
             newRow.cells[0].textContent = serialNum;
+            
+            // 按输入框类型重置默认值
             newRow.querySelectorAll(`.${className}`).forEach(el => {
-                el.value = el.tagName === 'SELECT' ? '' : '';
+                switch(el.type) {
+                    case 'number':
+                        el.value = 0; // 数字类型重置为 0
+                        break;
+                    case 'date':
+                        el.value = ''; // 日期类型清空
+                        break;
+                    case 'select-one':
+                        el.value = ''; // 下拉框清空
+                        break;
+                    case 'text':
+                    case 'textarea':
+                        el.value = ''; // 文本框清空
+                        break;
+                    default:
+                        el.value = '';
+                }
             });
-            newRow.querySelectorAll('.att5-file').forEach(el => el.value = '');
+            
+            // 单独处理文件输入框的清空
+            newRow.querySelectorAll('.att5-file').forEach(el => {
+                el.value = '';
+            });
             
             tbody.appendChild(newRow);
         }
 
-        // 删除表格行
+        // 删除表格行（逻辑优化，保持序号正确）
         function delRow(tableId, btn) {
             const table = document.getElementById(tableId);
             const tbody = table.querySelector('tbody');
             const row = btn.closest('tr');
-            if (tbody.children.length > 1) tbody.removeChild(row);
+            
+            // 确保至少保留一行
+            if (tbody.children.length <= 1) {
+                alert('至少需要保留一行数据');
+                return;
+            }
+            
+            tbody.removeChild(row);
             
             // 重新排序号
             Array.from(tbody.children).forEach((tr, idx) => {
@@ -500,50 +547,62 @@
             });
         }
 
-        // 提交月报数据
+        // ========== 主要改动4：补充附表 2-5 数据收集逻辑 ==========
+        // 提交月报数据，补充所有附表的收集和插入
         document.getElementById('monthlyForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            // 前端表单验证
+            const form = document.getElementById('monthlyForm');
+            if (!form.checkValidity()) {
+                alert('请填写所有必填项！');
+                // 触发原生验证提示
+                form.reportValidity();
+                return;
+            }
+
             try {
                 // 1. 收集主表数据
                 const mainData = {
-                    user_id: currentUser.id,
-                    project_name: currentUser.project_name,
-                    department: document.getElementById('department').value,
+                    user_id: currentUser.id || '',
+                    project_name: currentUser.project_name || '',
+                    department: document.getElementById('department').value.trim(),
                     report_month: document.getElementById('reportMonth').value,
-                    reporter: document.getElementById('reporter').value,
+                    reporter: document.getElementById('reporter').value.trim(),
                     report_date: document.getElementById('reportDate').value,
-                    work_overview: document.getElementById('workOverview').value,
-                    company_staff_num: parseInt(document.getElementById('companyStaffNum').value) || 0,
-                    contractor_manage_num: parseInt(document.getElementById('contractorManageNum').value) || 0,
-                    contractor_worker_num: parseInt(document.getElementById('contractorWorkerNum').value) || 0,
-                    full_time_safety_num: parseInt(document.getElementById('fullTimeSafetyNum').value) || 0,
-                    part_time_safety_num: parseInt(document.getElementById('partTimeSafetyNum').value) || 0,
-                    major_hazard_count: parseInt(document.getElementById('majorHazardCount').value) || 0,
-                    important_hazard_count: parseInt(document.getElementById('importantHazardCount').value) || 0,
-                    reward_person_num: parseInt(document.getElementById('rewardPersonNum').value) || 0,
+                    work_overview: document.getElementById('workOverview').value.trim(),
+                    company_staff_num: Number(document.getElementById('companyStaffNum').value) || 0,
+                    contractor_manage_num: Number(document.getElementById('contractorManageNum').value) || 0,
+                    contractor_worker_num: Number(document.getElementById('contractorWorkerNum').value) || 0,
+                    full_time_safety_num: Number(document.getElementById('fullTimeSafetyNum').value) || 0,
+                    part_time_safety_num: Number(document.getElementById('partTimeSafetyNum').value) || 0,
+                    major_hazard_count: Number(document.getElementById('majorHazardCount').value) || 0,
+                    important_hazard_count: Number(document.getElementById('importantHazardCount').value) || 0,
+                    reward_person_num: Number(document.getElementById('rewardPersonNum').value) || 0,
                     reward_amount: parseFloat(document.getElementById('rewardAmount').value) || 0,
-                    punish_person_num: parseInt(document.getElementById('punishPersonNum').value) || 0,
+                    punish_person_num: Number(document.getElementById('punishPersonNum').value) || 0,
                     punish_amount: parseFloat(document.getElementById('punishAmount').value) || 0,
-                    training_count: parseInt(document.getElementById('trainingCount').value) || 0,
-                    training_content: document.getElementById('trainingContent').value,
-                    training_cover_num: parseInt(document.getElementById('trainingCoverNum').value) || 0,
-                    drill_count: parseInt(document.getElementById('drillCount').value) || 0,
-                    drill_content: document.getElementById('drillContent').value,
-                    drill_cover_num: parseInt(document.getElementById('drillCoverNum').value) || 0,
-                    contractor_punish_count: parseInt(document.getElementById('contractorPunishCount').value) || 0,
+                    training_count: Number(document.getElementById('trainingCount').value) || 0,
+                    training_content: document.getElementById('trainingContent').value.trim(),
+                    training_cover_num: Number(document.getElementById('trainingCoverNum').value) || 0,
+                    drill_count: Number(document.getElementById('drillCount').value) || 0,
+                    drill_content: document.getElementById('drillContent').value.trim(),
+                    drill_cover_num: Number(document.getElementById('drillCoverNum').value) || 0,
+                    contractor_punish_count: Number(document.getElementById('contractorPunishCount').value) || 0,
                     contractor_punish_amount: parseFloat(document.getElementById('contractorPunishAmount').value) || 0,
-                    near_miss_count: parseInt(document.getElementById('nearMissCount').value) || 0,
-                    light_injury_count: parseInt(document.getElementById('lightInjuryCount').value) || 0,
-                    light_injury_person: parseInt(document.getElementById('lightInjuryPerson').value) || 0,
-                    severe_injury_count: parseInt(document.getElementById('severeInjuryCount').value) || 0,
-                    severe_injury_person: parseInt(document.getElementById('severeInjuryPerson').value) || 0,
-                    death_count: parseInt(document.getElementById('deathCount').value) || 0,
-                    death_person: parseInt(document.getElementById('deathPerson').value) || 0,
+                    near_miss_count: Number(document.getElementById('nearMissCount').value) || 0,
+                    light_injury_count: Number(document.getElementById('lightInjuryCount').value) || 0,
+                    light_injury_person: Number(document.getElementById('lightInjuryPerson').value) || 0,
+                    severe_injury_count: Number(document.getElementById('severeInjuryCount').value) || 0,
+                    severe_injury_person: Number(document.getElementById('severeInjuryPerson').value) || 0,
+                    death_count: Number(document.getElementById('deathCount').value) || 0,
+                    death_person: Number(document.getElementById('deathPerson').value) || 0,
                     safety_input_amount: parseFloat(document.getElementById('safetyInputAmount').value) || 0,
-                    contract_signed_count: parseInt(document.getElementById('contractSignedCount').value) || 0,
-                    innovation: document.getElementById('innovation').value,
-                    emergency_contribution: document.getElementById('emergencyContribution').value,
-                    safety_problem: document.getElementById('safetyProblem').value
+                    contract_signed_count: Number(document.getElementById('contractSignedCount').value) || 0,
+                    innovation: document.getElementById('innovation').value.trim(),
+                    emergency_contribution: document.getElementById('emergencyContribution').value.trim(),
+                    safety_problem: document.getElementById('safetyProblem').value.trim(),
+                    created_at: new Date().toISOString() // 新增创建时间
                 };
 
                 // 2. 插入主表数据
@@ -561,31 +620,162 @@
                     const inputs = tr.querySelectorAll('.att1');
                     att1Data.push({
                         main_id: mainId,
-                        project_name: currentUser.project_name,
+                        project_name: currentUser.project_name || '',
                         serial_num: parseInt(tr.cells[0].textContent),
-                        unit: inputs[0].value,
+                        unit: inputs[0].value.trim(),
                         hazard_category: inputs[1].value,
-                        location: inputs[2].value,
-                        risk_factor: inputs[3].value,
+                        location: inputs[2].value.trim(),
+                        risk_factor: inputs[3].value.trim(),
                         accident_type: inputs[4].value,
-                        prevention_measures: inputs[5].value,
+                        prevention_measures: inputs[5].value.trim(),
                         rectify_deadline: inputs[6].value,
-                        responsible_person: inputs[7].value
+                        responsible_person: inputs[7].value.trim()
                     });
                 });
 
-                // 4. 插入附表数据（同理处理其他附表）
+                // 4. 收集附表2数据
+                const att2Data = [];
+                Array.from(document.querySelectorAll('#attachment2Table tbody tr')).forEach(tr => {
+                    const inputs = tr.querySelectorAll('.att2');
+                    att2Data.push({
+                        main_id: mainId,
+                        project_name: currentUser.project_name || '',
+                        serial_num: parseInt(tr.cells[0].textContent),
+                        company: inputs[0].value.trim(),
+                        project: inputs[1].value.trim(),
+                        check_leader: inputs[2].value.trim(),
+                        check_personnel: inputs[3].value.trim(),
+                        check_method: inputs[4].value,
+                        check_date: inputs[5].value,
+                        hazard_desc: inputs[6].value.trim(),
+                        hazard_cause: inputs[7].value.trim(),
+                        hazard_category: inputs[8].value,
+                        hazard_level: inputs[9].value,
+                        rectify_company: inputs[10].value.trim(),
+                        rectify_person: inputs[11].value.trim(),
+                        rectify_deadline: inputs[12].value,
+                        rectify_cost: parseFloat(inputs[13].value) || 0,
+                        rectify_desc: inputs[14].value.trim(),
+                        hazard_eliminated: inputs[15].value === 'true',
+                        verifier: inputs[16].value.trim(),
+                        verify_date: inputs[17].value,
+                        publish_method: inputs[18].value.trim(),
+                        publish_date: inputs[19].value
+                    });
+                });
+
+                // 5. 收集附表3数据
+                const att3Data = [];
+                Array.from(document.querySelectorAll('#attachment3Table tbody tr')).forEach(tr => {
+                    const inputs = tr.querySelectorAll('.att3');
+                    att3Data.push({
+                        main_id: mainId,
+                        project_name: currentUser.project_name || '',
+                        serial_num: parseInt(tr.cells[0].textContent),
+                        partner_name: inputs[0].value.trim(),
+                        contract_amount: parseFloat(inputs[1].value) || 0,
+                        safety_license_expire: inputs[2].value,
+                        partner_total_num: Number(inputs[3].value) || 0,
+                        full_time_safety_num: Number(inputs[4].value) || 0,
+                        partner_leader: inputs[5].value.trim(),
+                        leader_has_safety_cert: inputs[6].value === 'true',
+                        partner_tech_leader: inputs[7].value.trim(),
+                        tech_leader_has_safety_cert: inputs[8].value === 'true',
+                        partner_safety_leader: inputs[9].value.trim(),
+                        safety_leader_has_safety_cert: inputs[10].value === 'true',
+                        approver: inputs[11].value.trim(),
+                        reviewer: inputs[12].value.trim(),
+                        reporter: inputs[13].value.trim(),
+                        report_date: inputs[14].value
+                    });
+                });
+
+                // 6. 收集附表4数据
+                const att4Data = [];
+                Array.from(document.querySelectorAll('#attachment4Table tbody tr')).forEach(tr => {
+                    const inputs = tr.querySelectorAll('.att4');
+                    att4Data.push({
+                        main_id: mainId,
+                        project_name: currentUser.project_name || '',
+                        serial_num: parseInt(tr.cells[0].textContent),
+                        company: inputs[0].value.trim(),
+                        project_part: inputs[1].value.trim(),
+                        work_content: inputs[2].value.trim(),
+                        situation_desc: inputs[3].value.trim(),
+                        risk_type: inputs[4].value,
+                        risk_level: inputs[5].value,
+                        expected_exist_time: inputs[6].value.trim(),
+                        is_direct_judge: inputs[7].value === 'true',
+                        judge_basis: inputs[8].value.trim(),
+                        key_control_measures: inputs[9].value.trim(),
+                        control_company: inputs[10].value.trim(),
+                        control_person: inputs[11].value.trim(),
+                        supervise_person: inputs[12].value.trim()
+                    });
+                });
+
+                // 7. 收集附表5数据（文件需单独上传到 Supabase Storage，此处仅记录基础信息）
+                const att5Data = [];
+                Array.from(document.querySelectorAll('#attachment5Table tbody tr')).forEach(tr => {
+                    const inputs = tr.querySelectorAll('.att5');
+                    const fileInput = tr.querySelector('.att5-file');
+                    att5Data.push({
+                        main_id: mainId,
+                        project_name: currentUser.project_name || '',
+                        serial_num: parseInt(tr.cells[0].textContent),
+                        file_name: inputs[0].value.trim(),
+                        // 文件路径后续从 Storage 获取，此处先记录文件名
+                        file_path: '', 
+                        upload_date: inputs[1].value,
+                        // 保存文件信息（需单独处理上传）
+                        file_info: fileInput.files.length > 0 ? fileInput.files[0].name : ''
+                    });
+                });
+
+                // 8. 插入所有附表数据
                 if (att1Data.length > 0) {
-                    await supabase.from('safety_attachment1_hazard').insert(att1Data);
+                    const { error: att1Err } = await supabase.from('safety_attachment1_hazard').insert(att1Data);
+                    if (att1Err) throw att1Err;
                 }
 
-                // （此处省略附表2-5的插入逻辑，与附表1类似，完整代码包含所有附表插入）
+                if (att2Data.length > 0) {
+                    const { error: att2Err } = await supabase.from('safety_attachment2_hazard_check').insert(att2Data);
+                    if (att2Err) throw att2Err;
+                }
+
+                if (att3Data.length > 0) {
+                    const { error: att3Err } = await supabase.from('safety_attachment3_partner').insert(att3Data);
+                    if (att3Err) throw att3Err;
+                }
+
+                if (att4Data.length > 0) {
+                    const { error: att4Err } = await supabase.from('safety_attachment4_risk_control').insert(att4Data);
+                    if (att4Err) throw att4Err;
+                }
+
+                if (att5Data.length > 0) {
+                    const { error: att5Err } = await supabase.from('safety_attachment5_files').insert(att5Data);
+                    if (att5Err) throw att5Err;
+                    // ========== 注意：文件上传需单独处理 ==========
+                    // 如需上传文件到 Supabase Storage，请参考以下逻辑：
+                    // for (let i = 0; i < att5Data.length; i++) {
+                    //   const fileInput = document.querySelectorAll('.att5-file')[i];
+                    //   if (fileInput.files.length > 0) {
+                    //     const file = fileInput.files[0];
+                    //     const filePath = `monthly_reports/${mainId}/${att5Data[i].serial_num}_${file.name}`;
+                    //     const { error: uploadErr } = await supabase.storage.from('safety_files').upload(filePath, file);
+                    //     if (uploadErr) throw uploadErr;
+                    //     // 更新文件路径
+                    //     await supabase.from('safety_attachment5_files').update({ file_path: filePath }).eq('main_id', mainId).eq('serial_num', att5Data[i].serial_num);
+                    //   }
+                    // }
+                }
 
                 alert('月报提交成功！');
-                document.getElementById('monthlyForm').reset();
+                form.reset();
             } catch (err) {
                 console.error('提交失败：', err);
-                alert('提交失败：' + err.message);
+                alert('提交失败：' + (err.message || '未知错误'));
             }
         });
     </script>

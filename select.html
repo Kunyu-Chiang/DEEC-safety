@@ -15,10 +15,11 @@
             padding: 20px;
         }
         .select-box {
-            width: 500px;
+            max-width: 500px; /* 改动1：响应式宽度 */
+            width: 100%;      /* 改动1：适配移动端 */
             background: #fff;
             border-radius: 12px;
-            padding: 40px;
+            padding: 40px 20px; /* 改动1：减少左右内边距，适配小屏 */
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             text-align: center;
         }
@@ -35,15 +36,22 @@
         .user-info p {
             color: #666;
             font-size: 14px;
+            /* 改动2：文本溢出截断 */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .btn-group {
             display: flex;
             gap: 20px;
             justify-content: center;
             margin-top: 20px;
+            /* 改动1：移动端换行 */
+            flex-wrap: wrap;
         }
         .select-btn {
-            width: 200px;
+            min-width: 160px; /* 改动1：适配小屏 */
+            width: 45%;       /* 改动1：平分宽度 */
             height: 60px;
             background: #0066cc;
             color: #fff;
@@ -62,6 +70,11 @@
             background: #004c99;
             transform: translateY(-2px);
         }
+        .select-btn:disabled { /* 改动3：禁用状态样式 */
+            background: #999;
+            cursor: not-allowed;
+            transform: none;
+        }
         .logout-btn {
             margin-top: 30px;
             background: #6c757d;
@@ -70,6 +83,16 @@
             padding: 10px 20px;
             border-radius: 6px;
             cursor: pointer;
+            transition: all 0.3s;
+        }
+        .logout-btn:hover {
+            background: #5a6268;
+        }
+        .loading-tip { /* 改动4：加载提示样式 */
+            color: #0066cc;
+            margin-top: 10px;
+            font-size: 14px;
+            display: none;
         }
     </style>
 </head>
@@ -81,22 +104,28 @@
         </div>
         <h2>请选择要填报的报表类型</h2>
         <div class="btn-group">
-            <button class="select-btn" onclick="goToMonthly()">
+            <button class="select-btn" id="monthlyBtn" onclick="goToMonthly()">
                 安全月报填报
             </button>
-            <button class="select-btn" onclick="goToWeekly()">
+            <button class="select-btn" id="weeklyBtn" onclick="goToWeekly()">
                 安全周报填报
             </button>
         </div>
-        <button class="logout-btn" onclick="logout()">退出登录</button>
+        <div class="loading-tip" id="loadingTip">正在跳转，请稍候...</div> <!-- 改动4：加载提示 -->
+        <button class="logout-btn" id="logoutBtn" onclick="logout()">退出登录</button>
     </div>
 
     <script>
+        // 全局变量：防止重复点击
+        let isNavigating = false;
+
         // 页面加载验证登录（强制校验，无法绕过）
         window.onload = function() {
+            console.log('选择页加载中，校验登录状态...'); // 改动5：调试日志
             // 1. 强制校验登录状态，无信息直接跳转登录页
             const userStr = localStorage.getItem('currentUser');
             if (!userStr) {
+                console.warn('无用户缓存，跳转登录页'); // 改动5：调试日志
                 localStorage.removeItem('currentUser');
                 window.location.href = 'login.html';
                 return;
@@ -105,7 +134,9 @@
             // 2. 校验用户信息是否完整（防止篡改缓存）
             try {
                 const currentUser = JSON.parse(userStr);
+                console.log('用户信息解析成功：', currentUser); // 改动5：调试日志
                 if (!currentUser.id || !currentUser.username || !currentUser.project_name) {
+                    console.warn('用户信息不完整，跳转登录页'); // 改动5：调试日志
                     localStorage.removeItem('currentUser');
                     window.location.href = 'login.html';
                     return;
@@ -115,23 +146,56 @@
                 document.getElementById('currentProject').innerText = currentUser.project_name;
             } catch (e) {
                 // 缓存格式错误，强制跳转登录
+                console.error('用户信息解析失败：', e); // 改动5：调试日志
                 localStorage.removeItem('currentUser');
                 window.location.href = 'login.html';
             }
         };
 
-        // 跳转到月报页
+        // 跳转到月报页（改动3：防重复点击 + 加载提示）
         function goToMonthly() {
-            window.location.href = 'monthly.html';
+            if (isNavigating) return;
+            isNavigating = true;
+            const monthlyBtn = document.getElementById('monthlyBtn');
+            const loadingTip = document.getElementById('loadingTip');
+            
+            // 禁用按钮 + 显示加载提示
+            monthlyBtn.disabled = true;
+            loadingTip.style.display = 'block';
+            
+            // 延迟跳转（模拟加载，提升体验）
+            setTimeout(() => {
+                window.location.href = 'monthly.html';
+            }, 300);
         }
 
-        // 跳转到周报页
+        // 跳转到周报页（改动3：防重复点击 + 加载提示）
         function goToWeekly() {
-            window.location.href = 'weekly.html';
+            if (isNavigating) return;
+            isNavigating = true;
+            const weeklyBtn = document.getElementById('weeklyBtn');
+            const loadingTip = document.getElementById('loadingTip');
+            
+            // 禁用按钮 + 显示加载提示
+            weeklyBtn.disabled = true;
+            loadingTip.style.display = 'block';
+            
+            // 延迟跳转（模拟加载，提升体验）
+            setTimeout(() => {
+                window.location.href = 'weekly.html';
+            }, 300);
         }
 
-        // 退出登录
+        // 退出登录（改动3：防重复点击）
         function logout() {
+            if (isNavigating) return;
+            isNavigating = true;
+            const logoutBtn = document.getElementById('logoutBtn');
+            
+            // 禁用按钮
+            logoutBtn.disabled = true;
+            
+            // 清空缓存并跳转
             localStorage.removeItem('currentUser');
             window.location.href = 'login.html';
         }

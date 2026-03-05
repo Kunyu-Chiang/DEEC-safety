@@ -17,9 +17,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap; /* 改动：适配移动端 */
+            gap: 10px; /* 改动：适配移动端 */
         }
         .header h1 { font-size: 22px; }
-        .user-info { display: flex; align-items: center; gap: 20px; }
+        .user-info { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; /* 改动：适配移动端 */ }
         .back-btn, .logout-btn { 
             background: rgba(255,255,255,0.2);
             border: 1px solid rgba(255,255,255,0.3);
@@ -27,8 +29,16 @@
             padding: 8px 15px;
             border-radius: 4px;
             cursor: pointer;
+            transition: all 0.3s; /* 改动：添加过渡 */
         }
-        .container { max-width: 1200px; margin: 0 auto; }
+        .back-btn:hover, .logout-btn:hover { /* 改动：hover样式 */
+            background: rgba(255,255,255,0.3);
+        }
+        .back-btn:disabled, .logout-btn:disabled { /* 改动：禁用状态 */
+            background: #999;
+            cursor: not-allowed;
+        }
+        .container { max-width: 1200px; margin: 0 auto; width: 100%; /* 改动：适配移动端 */ }
         .section-title { 
             background: #e6f0ff;
             padding: 10px 15px;
@@ -98,8 +108,9 @@
             <h1>在建工程项目安全管理工作周报填报</h1>
             <div class="user-info">
                 <span>当前项目：<span id="currentProject"></span></span>
-                <button class="back-btn" onclick="goBack()">返回选择页</button>
-                <button class="logout-btn" onclick="logout()">退出登录</button>
+                <!-- 改动1：添加ID，方便JS控制 + 移除内联onclick，改用事件绑定 -->
+                <button class="back-btn" id="backBtn">返回选择页</button>
+                <button class="logout-btn" id="logoutBtn">退出登录</button>
             </div>
         </div>
 
@@ -113,7 +124,7 @@
                 </div>
                 <div class="form-group">
                     <label>项目类型</label>
-                    <select id="weekly_projectType" name="weekly_projectType">
+                    <select id="weekly_projectType" name="weekly_projectType" required>
                         <option value="光伏EPC">光伏EPC</option>
                         <option value="风电EPC">风电EPC</option>
                         <option value="储能EPC">储能EPC</option>
@@ -124,11 +135,11 @@
                 </div>
                 <div class="form-group">
                     <label>项目负责人</label>
-                    <input type="text" id="weekly_projectLeader" placeholder="请输入项目负责人姓名">
+                    <input type="text" id="weekly_projectLeader" placeholder="请输入项目负责人姓名" required>
                 </div>
                 <div class="form-group">
                     <label>执行部门</label>
-                    <input type="text" id="weekly_executiveDepartment" placeholder="请输入执行部门">
+                    <input type="text" id="weekly_executiveDepartment" placeholder="请输入执行部门" required>
                 </div>
             </div>
             <div class="form-row">
@@ -155,33 +166,33 @@
             <div class="form-row">
                 <div class="form-group">
                     <label>安全检查次数</label>
-                    <input type="number" id="weekly_safetyInspectionCount" min="0" placeholder="请输入数字" value="0">
+                    <input type="number" id="weekly_safetyInspectionCount" min="0" placeholder="请输入数字" value="0" required>
                 </div>
                 <div class="form-group">
                     <label>发现隐患数量</label>
-                    <input type="number" id="weekly_hiddenDangerFoundCount" min="0" placeholder="请输入数字" value="0">
+                    <input type="number" id="weekly_hiddenDangerFoundCount" min="0" placeholder="请输入数字" value="0" required>
                 </div>
                 <div class="form-group">
                     <label>整改完成数量</label>
-                    <input type="number" id="weekly_hiddenDangerRectifiedCount" min="0" placeholder="请输入数字" value="0">
+                    <input type="number" id="weekly_hiddenDangerRectifiedCount" min="0" placeholder="请输入数字" value="0" required>
                 </div>
                 <div class="form-group">
                     <label>重大隐患数量</label>
-                    <input type="number" id="weekly_majorHiddenDangerCount" min="0" placeholder="请输入数字" value="0">
+                    <input type="number" id="weekly_majorHiddenDangerCount" min="0" placeholder="请输入数字" value="0" required>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group">
                     <label>安全培训次数</label>
-                    <input type="number" id="weekly_trainingPersonTimes" min="0" placeholder="请输入数字" value="0">
+                    <input type="number" id="weekly_trainingPersonTimes" min="0" placeholder="请输入数字" value="0" required>
                 </div>
                 <div class="form-group">
                     <label>应急演练次数</label>
-                    <input type="number" id="weekly_emergencyDrillCount" min="0" placeholder="请输入数字" value="0">
+                    <input type="number" id="weekly_emergencyDrillCount" min="0" placeholder="请输入数字" value="0" required>
                 </div>
                 <div class="form-group">
                     <label>本周安全事故数量</label>
-                    <input type="number" id="weekly_accidentCount" min="0" placeholder="请输入数字" value="0">
+                    <input type="number" id="weekly_accidentCount" min="0" placeholder="请输入数字" value="0" required>
                 </div>
                 <div class="form-group">
                     <label>备注</label>
@@ -207,17 +218,17 @@
                     <tbody>
                         <tr>
                             <td>1</td>
-                            <td><input type="text" class="weekly-danger-input" placeholder="请输入"></td>
+                            <td><input type="text" class="weekly-danger-input" placeholder="请输入" required></td>
                             <td>
-                                <select class="weekly-danger-input">
+                                <select class="weekly-danger-input" required>
                                     <option value="一般">一般</option>
                                     <option value="较大">较大</option>
                                     <option value="重大">重大</option>
                                 </select>
                             </td>
-                            <td><input type="text" class="weekly-danger-input" placeholder="请输入"></td>
-                            <td><input type="date" class="weekly-danger-input"></td>
-                            <td><input type="text" class="weekly-danger-input" placeholder="请输入"></td>
+                            <td><input type="text" class="weekly-danger-input" placeholder="请输入" required></td>
+                            <td><input type="date" class="weekly-danger-input" required></td>
+                            <td><input type="text" class="weekly-danger-input" placeholder="请输入" required></td>
                             <td><button type="button" class="del-row-btn" onclick="delRow(this)">删除</button></td>
                         </tr>
                     </tbody>
@@ -228,7 +239,7 @@
             <!-- 提交按钮 -->
             <div style="text-align: center; margin-top: 30px;">
                 <button type="button" class="submit-btn" onclick="submitWeeklyForm()">提交周报数据</button>
-                <button type="reset" class="reset-btn">清空表单</button>
+                <button type="reset" class="reset-btn" onclick="resetForm()">清空表单</button>
             </div>
         </form>
     </div>
@@ -239,14 +250,28 @@
         const SUPABASE_ANON_KEY = "sb_publishable_7zW8CxAae1sFTxNLqaSjTA_nkCkzD8T";
         // ==============================================
 
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // 全局变量：防止重复操作
+        let isProcessing = false;
         let currentUser = null;
+
+        // 初始化Supabase客户端（确保无冲突）
+        let supabase;
+        try {
+            const { createClient } = window.supabase;
+            supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            console.log('Supabase客户端初始化成功');
+        } catch (e) {
+            console.error('Supabase初始化失败：', e);
+            alert('系统初始化失败，请刷新页面重试');
+        }
 
         // 页面加载验证登录（强制校验）
         window.onload = async function() {
+            console.log('周报页加载中，校验登录状态...');
             // 1. 强制校验登录状态
             const userStr = localStorage.getItem('currentUser');
             if (!userStr) {
+                console.warn('无用户缓存，跳转登录页');
                 localStorage.removeItem('currentUser');
                 window.location.href = 'login.html';
                 return;
@@ -255,7 +280,9 @@
             // 2. 校验用户信息完整性
             try {
                 currentUser = JSON.parse(userStr);
+                console.log('用户信息解析成功：', currentUser);
                 if (!currentUser.id || !currentUser.username || !currentUser.project_name) {
+                    console.warn('用户信息不完整，跳转登录页');
                     localStorage.removeItem('currentUser');
                     window.location.href = 'login.html';
                     return;
@@ -263,25 +290,51 @@
                 // 3. 填充项目信息
                 document.getElementById('currentProject').innerText = currentUser.project_name;
                 document.getElementById('weekly_projectName').value = currentUser.project_name;
+
+                // 改动2：绑定返回/退出按钮事件（替代内联onclick，避免作用域问题）
+                bindHeaderButtons();
             } catch (e) {
+                console.error('用户信息解析失败：', e);
                 localStorage.removeItem('currentUser');
                 window.location.href = 'login.html';
             }
         };
 
-        // 返回选择页
-        function goBack() {
-            window.location.href = 'select.html';
-        }
+        // 改动2：绑定头部按钮事件（核心修复：按钮失效问题）
+        function bindHeaderButtons() {
+            const backBtn = document.getElementById('backBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
 
-        // 退出登录
-        function logout() {
-            localStorage.removeItem('currentUser');
-            window.location.href = 'login.html';
+            // 返回选择页按钮
+            backBtn.addEventListener('click', function() {
+                if (isProcessing) return;
+                isProcessing = true;
+                backBtn.disabled = true;
+                console.log('点击返回选择页，跳转中...');
+                // 延迟跳转，确保事件执行完成
+                setTimeout(() => {
+                    window.location.href = 'select.html';
+                }, 100);
+            });
+
+            // 退出登录按钮
+            logoutBtn.addEventListener('click', function() {
+                if (isProcessing) return;
+                isProcessing = true;
+                logoutBtn.disabled = true;
+                console.log('点击退出登录，清空缓存并跳转...');
+                // 清空缓存并跳转
+                localStorage.removeItem('currentUser');
+                // 延迟跳转，确保缓存已清空
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 100);
+            });
         }
 
         // 添加周报隐患行
         function addWeeklyDangerRow() {
+            if (isProcessing) return;
             const tableBody = document.querySelector('#weeklyDangerTable tbody');
             const rows = tableBody.querySelectorAll('tr');
             const newIndex = rows.length + 1;
@@ -289,32 +342,36 @@
             const newRow = document.createElement('tr');
             newRow.innerHTML = `
                 <td>${newIndex}</td>
-                <td><input type="text" class="weekly-danger-input" placeholder="请输入"></td>
+                <td><input type="text" class="weekly-danger-input" placeholder="请输入" required></td>
                 <td>
-                    <select class="weekly-danger-input">
+                    <select class="weekly-danger-input" required>
                         <option value="一般">一般</option>
                         <option value="较大">较大</option>
                         <option value="重大">重大</option>
                     </select>
                 </td>
-                <td><input type="text" class="weekly-danger-input" placeholder="请输入"></td>
-                <td><input type="date" class="weekly-danger-input"></td>
-                <td><input type="text" class="weekly-danger-input" placeholder="请输入"></td>
+                <td><input type="text" class="weekly-danger-input" placeholder="请输入" required></td>
+                <td><input type="date" class="weekly-danger-input" required value=""></td>
+                <td><input type="text" class="weekly-danger-input" placeholder="请输入" required></td>
                 <td><button type="button" class="del-row-btn" onclick="delRow(this)">删除</button></td>
             `;
             tableBody.appendChild(newRow);
-            
-            // 更新序号
             updateWeeklyRowNumbers();
         }
 
         // 删除行
         function delRow(btn) {
+            if (isProcessing) return;
             const row = btn.closest('tr');
             const tableBody = row.parentElement;
-            tableBody.removeChild(row);
+            const rows = tableBody.querySelectorAll('tr');
             
-            // 更新序号
+            if (rows.length <= 1) {
+                alert('至少需要保留1行隐患明细数据！');
+                return;
+            }
+            
+            tableBody.removeChild(row);
             updateWeeklyRowNumbers();
         }
 
@@ -327,51 +384,96 @@
             });
         }
 
-        // 修复后的周报提交函数
+        // 自定义表单重置函数
+        function resetForm() {
+            if (isProcessing) return;
+            document.getElementById('weeklyForm').reset();
+            document.getElementById('weekly_projectName').value = currentUser?.project_name || '';
+            const tableBody = document.querySelector('#weeklyDangerTable tbody');
+            tableBody.innerHTML = `
+                <tr>
+                    <td>1</td>
+                    <td><input type="text" class="weekly-danger-input" placeholder="请输入" required></td>
+                    <td>
+                        <select class="weekly-danger-input" required>
+                            <option value="一般">一般</option>
+                            <option value="较大">较大</option>
+                            <option value="重大">重大</option>
+                        </select>
+                    </td>
+                    <td><input type="text" class="weekly-danger-input" placeholder="请输入" required></td>
+                    <td><input type="date" class="weekly-danger-input" required></td>
+                    <td><input type="text" class="weekly-danger-input" placeholder="请输入" required></td>
+                    <td><button type="button" class="del-row-btn" onclick="delRow(this)">删除</button></td>
+                </tr>
+            `;
+        }
+
+        // 周报提交函数
         async function submitWeeklyForm() {
+            if (isProcessing) return;
+            isProcessing = true;
+
+            const form = document.getElementById('weeklyForm');
+            if (!form.checkValidity()) {
+                alert('请填写所有必填项！');
+                form.reportValidity();
+                isProcessing = false;
+                return;
+            }
+
             const weekStart = document.getElementById('weekly_reportStartDate').value;
             const weekEnd = document.getElementById('weekly_reportEndDate').value;
+            const startDate = new Date(weekStart);
+            const endDate = new Date(weekEnd);
             
-            // 基础校验
-            if (!weekStart || !weekEnd) {
-                alert('请填写周报周期日期！');
-                return;
-            }
-            if (new Date(weekStart) > new Date(weekEnd)) {
+            if (startDate > endDate) {
                 alert('开始日期不能晚于结束日期！');
+                isProcessing = false;
+                return;
+            }
+            const dayDiff = (endDate - startDate) / (1000 * 60 * 60 * 24) + 1;
+            if (dayDiff > 7) {
+                alert('周报周期不能超过7天！');
+                isProcessing = false;
                 return;
             }
 
-            // 计算周数
-            const weekYear = new Date(weekStart).getFullYear();
-            const weekMonth = new Date(weekStart).getMonth() + 1;
-            const weekNum = Math.ceil(new Date(weekStart).getDate() / 7);
+            // 周数计算
+            function getWeekNumber(date) {
+                const startOfYear = new Date(date.getFullYear(), 0, 1);
+                const dayOfYear = Math.floor((date - startOfYear) / (1000 * 60 * 60 * 24)) + 1;
+                return Math.ceil(dayOfYear / 7);
+            }
+            const weekYear = startDate.getFullYear();
+            const weekNum = getWeekNumber(startDate);
+            const weekMonth = startDate.getMonth() + 1;
 
-            // 收集表单数据
+            // 收集数据
             const weeklyData = {
                 user_id: currentUser.id,
                 project_name: document.getElementById('weekly_projectName').value,
                 project_type: document.getElementById('weekly_projectType').value,
-                project_leader: document.getElementById('weekly_projectLeader').value,
-                executive_department: document.getElementById('weekly_executiveDepartment').value,
+                project_leader: document.getElementById('weekly_projectLeader').value.trim(),
+                executive_department: document.getElementById('weekly_executiveDepartment').value.trim(),
                 report_start_date: weekStart,
                 report_end_date: weekEnd,
-                report_week: `${weekYear}-${weekMonth}月第${weekNum}周`,
-                reporter: document.getElementById('weekly_reporter').value,
+                report_week: `${weekYear}年第${weekNum}周（${weekMonth}月）`,
+                reporter: document.getElementById('weekly_reporter').value.trim(),
                 report_date: document.getElementById('weekly_reportDate').value,
-                safety_inspection_count: parseInt(document.getElementById('weekly_safetyInspectionCount').value) || 0,
-                hidden_danger_found_count: parseInt(document.getElementById('weekly_hiddenDangerFoundCount').value) || 0,
-                hidden_danger_rectified_count: parseInt(document.getElementById('weekly_hiddenDangerRectifiedCount').value) || 0,
-                major_hidden_danger_count: parseInt(document.getElementById('weekly_majorHiddenDangerCount').value) || 0,
-                training_person_times: parseInt(document.getElementById('weekly_trainingPersonTimes').value) || 0,
-                emergency_drill_count: parseInt(document.getElementById('weekly_emergencyDrillCount').value) || 0,
-                accident_count: parseInt(document.getElementById('weekly_accidentCount').value) || 0,
-                remark: document.getElementById('weekly_remark').value,
+                safety_inspection_count: Number(document.getElementById('weekly_safetyInspectionCount').value) || 0,
+                hidden_danger_found_count: Number(document.getElementById('weekly_hiddenDangerFoundCount').value) || 0,
+                hidden_danger_rectified_count: Number(document.getElementById('weekly_hiddenDangerRectifiedCount').value) || 0,
+                major_hidden_danger_count: Number(document.getElementById('weekly_majorHiddenDangerCount').value) || 0,
+                training_person_times: Number(document.getElementById('weekly_trainingPersonTimes').value) || 0,
+                emergency_drill_count: Number(document.getElementById('weekly_emergencyDrillCount').value) || 0,
+                accident_count: Number(document.getElementById('weekly_accidentCount').value) || 0,
+                remark: document.getElementById('weekly_remark').value.trim(),
                 created_at: new Date().toISOString()
             };
 
             try {
-                // 提交主表数据
+                // 提交主表
                 const { data: reportData, error: reportError } = await supabase
                     .from('safety_weekly_report')
                     .insert([weeklyData])
@@ -380,7 +482,7 @@
 
                 if (reportError) throw reportError;
 
-                // 收集隐患明细数据
+                // 收集明细
                 const dangerRows = document.querySelectorAll('#weeklyDangerTable tbody tr');
                 const dangerData = [];
                 
@@ -389,16 +491,16 @@
                     dangerData.push({
                         report_id: reportData.id,
                         serial_number: index + 1,
-                        danger_description: inputs[0].value,
+                        danger_description: inputs[0].value.trim(),
                         danger_level: inputs[1].value,
-                        treatment_description: inputs[2].value,
+                        treatment_description: inputs[2].value.trim(),
                         treatment_deadline: inputs[3].value,
-                        verify_person: inputs[4].value,
+                        verify_person: inputs[4].value.trim(),
                         project_name: currentUser.project_name
                     });
                 });
 
-                // 提交隐患明细
+                // 提交明细
                 if (dangerData.length > 0) {
                     const { error: dangerError } = await supabase
                         .from('weekly_danger_detail')
@@ -408,31 +510,13 @@
                 }
 
                 alert('周报提交成功！');
-                document.getElementById('weeklyForm').reset();
-                
-                // 重置表格为初始状态
-                const tableBody = document.querySelector('#weeklyDangerTable tbody');
-                tableBody.innerHTML = `
-                    <tr>
-                        <td>1</td>
-                        <td><input type="text" class="weekly-danger-input" placeholder="请输入"></td>
-                        <td>
-                            <select class="weekly-danger-input">
-                                <option value="一般">一般</option>
-                                <option value="较大">较大</option>
-                                <option value="重大">重大</option>
-                            </select>
-                        </td>
-                        <td><input type="text" class="weekly-danger-input" placeholder="请输入"></td>
-                        <td><input type="date" class="weekly-danger-input"></td>
-                        <td><input type="text" class="weekly-danger-input" placeholder="请输入"></td>
-                        <td><button type="button" class="del-row-btn" onclick="delRow(this)">删除</button></td>
-                    </tr>
-                `;
-
+                resetForm();
             } catch (error) {
                 console.error('周报提交失败：', error);
-                alert('周报提交失败：' + error.message);
+                alert('周报提交失败：' + (error.message || '未知错误，请联系管理员'));
+            } finally {
+                // 重置处理状态
+                isProcessing = false;
             }
         }
     </script>

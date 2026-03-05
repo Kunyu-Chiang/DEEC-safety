@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>安全管理系统-登录</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Microsoft YaHei", sans-serif; }
+        body { 
+            min-height: 100vh; 
+            background: linear-gradient(135deg, #003366 0%, #0066cc 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px; /* 新增：移动端内边距 */
+        }
+        .login-box {
+            max-width: 420px; /* 改动：响应式宽度 */
+            width: 100%;      /* 改动：适配移动端 */
+            background: #fff;
+            border-radius: 12px;
+            padding: 40px 35px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .logo-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo-title h1 {
+            color: #003366;
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+        .logo-title p {
+            color: #666;
+            font-size: 14px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        .form-group input {
+            width: 100%;
+            height: 45px;
+            padding: 0 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
+            transition: border 0.3s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #0066cc;
+        }
+        .login-btn {
+            width: 100%;
+            height: 48px;
+            background: #0066cc;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+        .login-btn:hover {
+            background: #004c99;
+        }
+        .login-btn:disabled { /* 新增：禁用状态样式 */
+            background: #999;
+            cursor: not-allowed;
+        }
+        .error-msg {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 15px;
+            text-align: center;
+            display: none;
+        }
+        .loading-msg { /* 新增：加载提示样式 */
+            color: #0066cc;
+            font-size: 14px;
+            margin-top: 15px;
+            text-align: center;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <div class="logo-title">
+            <h1>东方设计安全管理信息系统</h1>
+            <p>安全管理信息填报</p>
+        </div>
+        <form id="loginForm">
+            <div class="form-group">
+                <label>账号</label>
+                <input type="text" id="username" required placeholder="请输入登录账号" minlength="2"> <!-- 新增：最小长度校验 -->
+            </div>
+            <div class="form-group">
+                <label>密码</label>
+                <input type="password" id="password" required placeholder="请输入登录密码" minlength="6"> <!-- 新增：密码最小长度 -->
+            </div>
+            <button type="submit" class="login-btn" id="loginBtn">登录系统</button>
+            <div class="loading-msg" id="loadingMsg">正在验证账号，请稍候...</div> <!-- 新增：加载提示 -->
+            <div class="error-msg" id="errorMsg">账号或密码错误，请重新输入</div>
+        </form>
+    </div>
+
+    <script>
+        // ========== 替换成你自己的Supabase配置 ==========
+        const SUPABASE_URL = "https://zmbxpsbxxjrsdzyvtiyi.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_7zW8CxAae1sFTxNLqaSjTA_nkCkzD8T";
+        // ==============================================
+
+        // 修复1：解决Supabase初始化变量名冲突
+        let supabaseClient;
+        try {
+            const { createClient } = window.supabase;
+            supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            console.log('Supabase客户端初始化成功');
+        } catch (e) {
+            console.error('Supabase初始化失败：', e);
+            alert('系统初始化失败，请检查网络或配置！');
+        }
+
+        // 修复2：防重复提交标记
+        let isLoggingIn = false;
+
+        // 登录表单提交
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const loginBtn = document.getElementById('loginBtn');
+            const loadingMsg = document.getElementById('loadingMsg');
+            const errorMsg = document.getElementById('errorMsg');
+
+            // 修复3：基础输入校验（前端兜底）
+            if (!usernameInput.checkValidity() || !passwordInput.checkValidity()) {
+                alert('账号至少2位，密码至少6位！');
+                usernameInput.reportValidity();
+                passwordInput.reportValidity();
+                return;
+            }
+
+            // 修复4：防重复提交
+            if (isLoggingIn) return;
+            isLoggingIn = true;
+            loginBtn.disabled = true;
+            loadingMsg.style.display = 'block';
+            errorMsg.style.display = 'none';
+
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value.trim();
+
+            try {
+                // 修复5：使用正确的Supabase客户端实例
+                const { data, error } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('username', username)
+                    .eq('password', password)
+                    .single();
+
+                if (error || !data) {
+                    // 修复6：精准错误提示
+                    if (error.code === 'PGRST116') { // 无匹配数据（账号密码错）
+                        errorMsg.textContent = '账号或密码错误，请重新输入';
+                    } else if (error.code === '42P01') { // 表不存在
+                        errorMsg.textContent = '系统表不存在，请联系管理员';
+                    } else { // 其他错误（网络/配置）
+                        errorMsg.textContent = '登录失败：' + error.message;
+                    }
+                    errorMsg.style.display = 'block';
+                    return;
+                }
+
+                // 登录成功：保存用户信息 + 跳转
+                localStorage.setItem('currentUser', JSON.stringify(data));
+                alert('登录成功！');
+                window.location.href = 'select.html';
+
+            } catch (networkError) {
+                // 修复7：网络错误处理
+                errorMsg.textContent = '网络异常，请检查网络后重试！';
+                errorMsg.style.display = 'block';
+                console.error('登录网络错误：', networkError);
+            } finally {
+                // 修复8：重置状态
+                isLoggingIn = false;
+                loginBtn.disabled = false;
+                loadingMsg.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
