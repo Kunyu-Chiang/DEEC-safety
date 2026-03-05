@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>安全环境管理工作月报填报</title>
-    <!-- 引入 Supabase JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Microsoft YaHei", sans-serif; }
@@ -14,13 +13,16 @@
             color: #fff; padding: 20px 30px;
             border-radius: 8px; margin-bottom: 20px;
             display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 10px;
         }
         .header h1 { font-size: 22px; }
         .btn-group button { 
             background: rgba(255,255,255,0.2); border: 1px solid #fff3;
             color: #fff; padding: 8px 15px; border-radius: 4px;
-            cursor: pointer; margin-left: 10px;
+            cursor: pointer; margin-left: 10px; transition: all 0.3s;
         }
+        .btn-group button:hover { background: rgba(255,255,255,0.3); }
+        .btn-group button:disabled { background: #999; cursor: not-allowed; }
         .container { max-width: 1400px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px #0001; }
         .section-title { 
             background: #e6f0ff; color: #003366;
@@ -41,9 +43,11 @@
         table th { background: #f0f5ff; color: #003366; text-align: left; }
         .table-btn { display: flex; gap: 10px; margin: 10px 0; }
         .add-btn { background: #28a745; color: #fff; border: none; padding: 6px 15px; border-radius: 4px; cursor: pointer; }
+        .add-btn:disabled { opacity: 0.6; cursor: not-allowed; }
         .del-btn { background: #dc3545; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
         .submit-area { text-align: center; margin: 30px 0; }
         .submit-btn { background: #0066cc; color: #fff; border: none; padding: 12px 30px; border-radius: 6px; font-size: 16px; cursor: pointer; margin-right: 15px; }
+        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
         .reset-btn { background: #6c757d; color: #fff; border: none; padding: 12px 20px; border-radius: 6px; font-size: 16px; cursor: pointer; }
     </style>
 </head>
@@ -51,8 +55,8 @@
     <div class="header">
         <h1>安全环境管理工作月报填报</h1>
         <div class="btn-group">
-            <button onclick="window.location.href='select.html'">返回选择页</button>
-            <button onclick="logout()">退出登录</button>
+            <button id="backBtn">返回选择页</button>
+            <button id="logoutBtn">退出登录</button>
         </div>
     </div>
 
@@ -111,7 +115,7 @@
             </div>
             <div class="form-group">
                 <label>安全生产培训内容、形式、日期</label>
-                <textarea id="trainingContent" placeholder="例：2026-03-10 消防安全培训（线下），2026-03-20 高处作业培训（线上）" required></textarea>
+                <textarea id="trainingContent" placeholder="例：2026-03-10 消防安全培训（线下）" required></textarea>
             </div>
             <div class="form-row">
                 <div class="form-group"><label>培训覆盖人数</label><input type="number" id="trainingCoverNum" min="0" value="0" required></div>
@@ -217,12 +221,12 @@
                             <td><input type="text" class="att1" placeholder="填写措施" required></td>
                             <td><input type="date" class="att1" required></td>
                             <td><input type="text" class="att1" placeholder="填写姓名" required></td>
-                            <td><button type="button" class="del-btn" onclick="delRow('attachment1Table', this)">删除</button></td>
+                            <td><button type="button" class="del-btn">删除</button></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <div class="table-btn"><button type="button" class="add-btn" onclick="addRow('attachment1Table', 'att1')">新增一行</button></div>
+            <div class="table-btn"><button type="button" class="add-btn" id="addAtt1">新增一行</button></div>
 
             <!-- 附表2：隐患排查治理台账 -->
             <div class="section-title">附表2：安全生产隐患排查治理信息统计表</div>
@@ -305,12 +309,12 @@
                             <td><input type="date" class="att2" required></td>
                             <td><input type="text" class="att2" placeholder="填写方式" required></td>
                             <td><input type="date" class="att2" required></td>
-                            <td><button type="button" class="del-btn" onclick="delRow('attachment2Table', this)">删除</button></td>
+                            <td><button type="button" class="del-btn">删除</button></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <div class="table-btn"><button type="button" class="add-btn" onclick="addRow('attachment2Table', 'att2')">新增一行</button></div>
+            <div class="table-btn"><button type="button" class="add-btn" id="addAtt2">新增一行</button></div>
 
             <!-- 附表3：相关方安全信息 -->
             <div class="section-title">附表3：相关方安全信息统计表</div>
@@ -357,12 +361,12 @@
                             <td><input type="text" class="att3" placeholder="填写姓名" required></td>
                             <td><input type="text" class="att3" placeholder="填写姓名" required></td>
                             <td><input type="date" class="att3" required></td>
-                            <td><button type="button" class="del-btn" onclick="delRow('attachment3Table', this)">删除</button></td>
+                            <td><button type="button" class="del-btn">删除</button></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <div class="table-btn"><button type="button" class="add-btn" onclick="addRow('attachment3Table', 'att3')">新增一行</button></div>
+            <div class="table-btn"><button type="button" class="add-btn" id="addAtt3">新增一行</button></div>
 
             <!-- 附表4：风险管控清单 -->
             <div class="section-title">附表4：项目安全风险管控清单</div>
@@ -412,12 +416,12 @@
                             <td><input type="text" class="att4" placeholder="填写单位" required></td>
                             <td><input type="text" class="att4" placeholder="填写姓名" required></td>
                             <td><input type="text" class="att4" placeholder="填写姓名" required></td>
-                            <td><button type="button" class="del-btn" onclick="delRow('attachment4Table', this)">删除</button></td>
+                            <td><button type="button" class="del-btn">删除</button></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <div class="table-btn"><button type="button" class="add-btn" onclick="addRow('attachment4Table', 'att4')">新增一行</button></div>
+            <div class="table-btn"><button type="button" class="add-btn" id="addAtt4">新增一行</button></div>
 
             <!-- 附表5：工作照片/附件 -->
             <div class="section-title">附表5：安全管理工作照片/附件</div>
@@ -434,138 +438,244 @@
                             <td><input type="text" class="att5" placeholder="填写名称" required></td>
                             <td><input type="file" class="att5-file" accept="image/*,.pdf,.doc,.docx" required></td>
                             <td><input type="date" class="att5" required></td>
-                            <td><button type="button" class="del-btn" onclick="delRow('attachment5Table', this)">删除</button></td>
+                            <td><button type="button" class="del-btn">删除</button></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <div class="table-btn"><button type="button" class="add-btn" onclick="addRow('attachment5Table', 'att5')">新增一行</button></div>
+            <div class="table-btn"><button type="button" class="add-btn" id="addAtt5">新增一行</button></div>
 
             <!-- 提交按钮 -->
             <div class="submit-area">
-                <button type="submit" class="submit-btn">提交月报数据</button>
-                <button type="reset" class="reset-btn">清空表单</button>
+                <button type="button" class="submit-btn" id="submitBtn">提交月报数据</button>
+                <button type="button" class="reset-btn" id="resetBtn">清空表单</button>
             </div>
         </form>
     </div>
 
     <script>
-        // ========== 主要改动1：修复 Supabase 客户端初始化 ==========
-        // 正确解构 createClient 方法，避免变量名冲突
-        const SUPABASE_URL = "https://zmbxpsbxxjrsdzyvtiyi.supabase.co";
-        const SUPABASE_ANON_KEY = "sb_publishable_7zW8CxAae1sFTxNLqaSjTA_nkCkzD8T";
-        // 解构 createClient 方法
-        const { createClient } = window.supabase;
-        // 正确初始化客户端
-        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        let currentUser = null;
+        // ================ 全局配置&状态（挂载到window，确保全局可访问） ================
+        window.SUPABASE_URL = "https://zmbxpsbxxjrsdzyvtiyi.supabase.co";
+        window.SUPABASE_ANON_KEY = "sb_publishable_7zW8CxAae1sFTxNLqaSjTA_nkCkzD8T";
+        window.isProcessing = false;
+        window.currentUser = null;
+        window.supabaseClient = null;
 
-        // ========== 主要改动2：优化页面加载的异常处理 ==========
-        // 页面加载验证登录，增加 try-catch 防止解析失败
-        window.onload = () => {
+        // ================ 通用表格操作函数（挂载到window，解决作用域问题） ================
+        // 通用新增行函数
+        window.addTableRow = function(tableId, className) {
+            if (window.isProcessing) {
+                console.log('【日志】操作进行中，拦截新增请求');
+                return;
+            }
+            window.isProcessing = true;
+            console.log('【日志】开始新增行，表格ID：', tableId);
+
             try {
-                const userStr = localStorage.getItem('currentUser');
-                if (!userStr) { 
-                    window.location.href = 'login.html'; 
-                    return; 
-                }
-                // 增加 JSON 解析的异常捕获
-                currentUser = JSON.parse(userStr);
-                document.getElementById('projectName').value = currentUser.project_name || '';
-            } catch (err) {
-                console.error('用户信息解析失败：', err);
-                alert('登录状态异常，请重新登录');
-                localStorage.removeItem('currentUser');
-                window.location.href = 'login.html';
+                const table = document.getElementById(tableId);
+                if (!table) throw new Error(`未找到表格：${tableId}`);
+                const tbody = table.querySelector('tbody');
+                const lastRow = tbody.lastElementChild;
+                const newRow = lastRow.cloneNode(true);
+                const serialNum = tbody.children.length + 1;
+                
+                // 重置序号
+                newRow.cells[0].textContent = serialNum;
+                // 重置输入值
+                newRow.querySelectorAll(`.${className}`).forEach(el => {
+                    switch(el.type) {
+                        case 'number': el.value = 0; break;
+                        case 'date': el.value = ''; break;
+                        case 'select-one': el.value = ''; break;
+                        case 'text': case 'textarea': el.value = ''; break;
+                        default: el.value = '';
+                    }
+                });
+                // 单独清空文件输入框
+                newRow.querySelectorAll('.att5-file').forEach(el => el.value = '');
+                // 重新绑定删除按钮事件
+                const delBtn = newRow.querySelector('.del-btn');
+                delBtn.addEventListener('click', function() {
+                    window.delTableRow(tableId, this);
+                });
+                
+                tbody.appendChild(newRow);
+                console.log('【日志】新增行成功，当前行数：', serialNum);
+                alert('新增行成功！');
+
+            } catch (e) {
+                console.error('【错误】新增行失败：', e);
+                alert('新增行失败：' + e.message);
+            } finally {
+                window.isProcessing = false;
             }
         };
 
-        // 退出登录
-        function logout() {
-            localStorage.removeItem('currentUser');
-            window.location.href = 'login.html';
-        }
+        // 通用删除行函数
+        window.delTableRow = function(tableId, btn) {
+            if (window.isProcessing) {
+                console.log('【日志】操作进行中，拦截删除请求');
+                return;
+            }
+            try {
+                // 兼容写法找tr
+                let row = btn.parentNode;
+                while (row && row.tagName !== 'TR') {
+                    row = row.parentNode;
+                }
+                if (!row) throw new Error('未找到要删除的行');
+                const table = document.getElementById(tableId);
+                const tbody = table.querySelector('tbody');
+                
+                // 保留至少1行
+                if (tbody.children.length <= 1) {
+                    alert('至少需要保留1行数据！');
+                    return;
+                }
+                
+                tbody.removeChild(row);
+                // 重新排序号
+                Array.from(tbody.children).forEach((tr, idx) => {
+                    tr.cells[0].textContent = idx + 1;
+                });
+                console.log('【日志】删除行成功');
 
-        // ========== 主要改动3：优化新增行的重置逻辑 ==========
-        // 新增表格行，按输入框类型重置默认值
-        function addRow(tableId, className) {
-            const table = document.getElementById(tableId);
-            const tbody = table.querySelector('tbody');
-            const lastRow = tbody.lastElementChild;
-            const newRow = lastRow.cloneNode(true);
-            const serialNum = tbody.children.length + 1;
-            
-            // 重置序号
-            newRow.cells[0].textContent = serialNum;
-            
-            // 按输入框类型重置默认值
-            newRow.querySelectorAll(`.${className}`).forEach(el => {
-                switch(el.type) {
-                    case 'number':
-                        el.value = 0; // 数字类型重置为 0
-                        break;
-                    case 'date':
-                        el.value = ''; // 日期类型清空
-                        break;
-                    case 'select-one':
-                        el.value = ''; // 下拉框清空
-                        break;
-                    case 'text':
-                    case 'textarea':
-                        el.value = ''; // 文本框清空
-                        break;
-                    default:
-                        el.value = '';
+            } catch (e) {
+                console.error('【错误】删除行失败：', e);
+                alert('删除失败：' + e.message);
+            }
+        };
+
+        // 表单重置函数
+        window.resetMonthlyForm = function() {
+            if (window.isProcessing) return;
+            document.getElementById('monthlyForm').reset();
+            // 重新填充项目名称
+            document.getElementById('projectName').value = window.currentUser?.project_name || '';
+            // 重置所有附表为初始状态
+            const tableConfigs = [
+                { id: 'attachment1Table', class: 'att1' },
+                { id: 'attachment2Table', class: 'att2' },
+                { id: 'attachment3Table', class: 'att3' },
+                { id: 'attachment4Table', class: 'att4' },
+                { id: 'attachment5Table', class: 'att5' }
+            ];
+            tableConfigs.forEach(config => {
+                const tbody = document.querySelector(`#${config.id} tbody`);
+                tbody.innerHTML = tbody.firstElementChild.outerHTML;
+                // 重新绑定初始行的删除事件
+                const delBtn = tbody.querySelector('.del-btn');
+                delBtn.addEventListener('click', function() {
+                    window.delTableRow(config.id, this);
+                });
+            });
+        };
+
+        // ================ 页面初始化 ================
+        window.addEventListener('DOMContentLoaded', async function() {
+            console.log('【日志】月报页DOM加载完成，开始初始化');
+            // 1. 初始化Supabase（容错处理）
+            try {
+                const { createClient } = window.supabase;
+                window.supabaseClient = createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+                console.log('【日志】Supabase初始化成功');
+            } catch (e) {
+                console.error('【错误】Supabase初始化失败：', e);
+                alert('系统初始化失败，部分功能可能异常，请刷新重试');
+            }
+
+            // 2. 登录状态校验
+            try {
+                const userStr = localStorage.getItem('currentUser');
+                if (!userStr) {
+                    alert('未检测到登录信息，请重新登录');
+                    window.location.href = 'index.html';
+                    return;
+                }
+                window.currentUser = JSON.parse(userStr);
+                if (!window.currentUser.id || !window.currentUser.username || !window.currentUser.project_name) {
+                    throw new Error('用户信息不完整');
+                }
+                document.getElementById('projectName').value = window.currentUser.project_name;
+                console.log('【日志】用户信息加载成功：', window.currentUser.project_name);
+            } catch (e) {
+                console.error('【错误】用户信息解析失败：', e);
+                localStorage.removeItem('currentUser');
+                alert('登录状态异常，请重新登录');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // 3. 绑定所有按钮事件（替代内联onclick，更稳定）
+            // 头部按钮
+            document.getElementById('backBtn').addEventListener('click', function() {
+                if (window.isProcessing) return;
+                window.location.href = 'select.html';
+            });
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                if (window.isProcessing) return;
+                localStorage.removeItem('currentUser');
+                window.location.href = 'index.html';
+            });
+            // 附表新增按钮
+            document.getElementById('addAtt1').addEventListener('click', function() {
+                window.addTableRow('attachment1Table', 'att1');
+            });
+            document.getElementById('addAtt2').addEventListener('click', function() {
+                window.addTableRow('attachment2Table', 'att2');
+            });
+            document.getElementById('addAtt3').addEventListener('click', function() {
+                window.addTableRow('attachment3Table', 'att3');
+            });
+            document.getElementById('addAtt4').addEventListener('click', function() {
+                window.addTableRow('attachment4Table', 'att4');
+            });
+            document.getElementById('addAtt5').addEventListener('click', function() {
+                window.addTableRow('attachment5Table', 'att5');
+            });
+            // 初始行删除按钮
+            const tableConfigs = [
+                { id: 'attachment1Table' },
+                { id: 'attachment2Table' },
+                { id: 'attachment3Table' },
+                { id: 'attachment4Table' },
+                { id: 'attachment5Table' }
+            ];
+            tableConfigs.forEach(config => {
+                const delBtn = document.querySelector(`#${config.id} .del-btn`);
+                if (delBtn) {
+                    delBtn.addEventListener('click', function() {
+                        window.delTableRow(config.id, this);
+                    });
                 }
             });
-            
-            // 单独处理文件输入框的清空
-            newRow.querySelectorAll('.att5-file').forEach(el => {
-                el.value = '';
-            });
-            
-            tbody.appendChild(newRow);
-        }
+            // 提交/重置按钮
+            document.getElementById('resetBtn').addEventListener('click', window.resetMonthlyForm);
+            document.getElementById('submitBtn').addEventListener('click', submitMonthlyForm);
 
-        // 删除表格行（逻辑优化，保持序号正确）
-        function delRow(tableId, btn) {
-            const table = document.getElementById(tableId);
-            const tbody = table.querySelector('tbody');
-            const row = btn.closest('tr');
-            
-            // 确保至少保留一行
-            if (tbody.children.length <= 1) {
-                alert('至少需要保留一行数据');
-                return;
-            }
-            
-            tbody.removeChild(row);
-            
-            // 重新排序号
-            Array.from(tbody.children).forEach((tr, idx) => {
-                tr.cells[0].textContent = idx + 1;
-            });
-        }
+            console.log('【日志】月报页初始化完成，所有事件绑定成功');
+        });
 
-        // ========== 主要改动4：补充附表 2-5 数据收集逻辑 ==========
-        // 提交月报数据，补充所有附表的收集和插入
-        document.getElementById('monthlyForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            // 前端表单验证
-            const form = document.getElementById('monthlyForm');
-            if (!form.checkValidity()) {
-                alert('请填写所有必填项！');
-                // 触发原生验证提示
-                form.reportValidity();
-                return;
-            }
+        // ================ 表单提交函数 ================
+        async function submitMonthlyForm() {
+            if (window.isProcessing) return;
+            window.isProcessing = true;
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
 
             try {
-                // 1. 收集主表数据
+                // 1. 表单基础验证
+                const form = document.getElementById('monthlyForm');
+                if (!form.checkValidity()) {
+                    alert('请填写所有必填项！');
+                    form.reportValidity();
+                    return;
+                }
+
+                // 2. 收集主表数据
                 const mainData = {
-                    user_id: currentUser.id || '',
-                    project_name: currentUser.project_name || '',
+                    user_id: window.currentUser.id,
+                    project_name: window.currentUser.project_name,
                     department: document.getElementById('department').value.trim(),
                     report_month: document.getElementById('reportMonth').value,
                     reporter: document.getElementById('reporter').value.trim(),
@@ -602,11 +712,11 @@
                     innovation: document.getElementById('innovation').value.trim(),
                     emergency_contribution: document.getElementById('emergencyContribution').value.trim(),
                     safety_problem: document.getElementById('safetyProblem').value.trim(),
-                    created_at: new Date().toISOString() // 新增创建时间
+                    created_at: new Date().toISOString()
                 };
 
-                // 2. 插入主表数据
-                const { data: mainRes, error: mainErr } = await supabase
+                // 3. 插入主表数据
+                const { data: mainRes, error: mainErr } = await window.supabaseClient
                     .from('safety_monthly_main')
                     .insert([mainData])
                     .select('id')
@@ -614,13 +724,13 @@
                 if (mainErr) throw mainErr;
                 const mainId = mainRes.id;
 
-                // 3. 收集附表1数据
+                // 4. 收集并插入附表1数据
                 const att1Data = [];
                 Array.from(document.querySelectorAll('#attachment1Table tbody tr')).forEach(tr => {
                     const inputs = tr.querySelectorAll('.att1');
                     att1Data.push({
                         main_id: mainId,
-                        project_name: currentUser.project_name || '',
+                        project_name: window.currentUser.project_name,
                         serial_num: parseInt(tr.cells[0].textContent),
                         unit: inputs[0].value.trim(),
                         hazard_category: inputs[1].value,
@@ -632,14 +742,18 @@
                         responsible_person: inputs[7].value.trim()
                     });
                 });
+                if (att1Data.length > 0) {
+                    const { error: att1Err } = await window.supabaseClient.from('safety_attachment1_hazard').insert(att1Data);
+                    if (att1Err) throw att1Err;
+                }
 
-                // 4. 收集附表2数据
+                // 5. 收集并插入附表2数据
                 const att2Data = [];
                 Array.from(document.querySelectorAll('#attachment2Table tbody tr')).forEach(tr => {
                     const inputs = tr.querySelectorAll('.att2');
                     att2Data.push({
                         main_id: mainId,
-                        project_name: currentUser.project_name || '',
+                        project_name: window.currentUser.project_name,
                         serial_num: parseInt(tr.cells[0].textContent),
                         company: inputs[0].value.trim(),
                         project: inputs[1].value.trim(),
@@ -663,14 +777,18 @@
                         publish_date: inputs[19].value
                     });
                 });
+                if (att2Data.length > 0) {
+                    const { error: att2Err } = await window.supabaseClient.from('safety_attachment2_hazard_check').insert(att2Data);
+                    if (att2Err) throw att2Err;
+                }
 
-                // 5. 收集附表3数据
+                // 6. 收集并插入附表3数据
                 const att3Data = [];
                 Array.from(document.querySelectorAll('#attachment3Table tbody tr')).forEach(tr => {
                     const inputs = tr.querySelectorAll('.att3');
                     att3Data.push({
                         main_id: mainId,
-                        project_name: currentUser.project_name || '',
+                        project_name: window.currentUser.project_name,
                         serial_num: parseInt(tr.cells[0].textContent),
                         partner_name: inputs[0].value.trim(),
                         contract_amount: parseFloat(inputs[1].value) || 0,
@@ -689,14 +807,18 @@
                         report_date: inputs[14].value
                     });
                 });
+                if (att3Data.length > 0) {
+                    const { error: att3Err } = await window.supabaseClient.from('safety_attachment3_partner').insert(att3Data);
+                    if (att3Err) throw att3Err;
+                }
 
-                // 6. 收集附表4数据
+                // 7. 收集并插入附表4数据
                 const att4Data = [];
                 Array.from(document.querySelectorAll('#attachment4Table tbody tr')).forEach(tr => {
                     const inputs = tr.querySelectorAll('.att4');
                     att4Data.push({
                         main_id: mainId,
-                        project_name: currentUser.project_name || '',
+                        project_name: window.currentUser.project_name,
                         serial_num: parseInt(tr.cells[0].textContent),
                         company: inputs[0].value.trim(),
                         project_part: inputs[1].value.trim(),
@@ -713,71 +835,42 @@
                         supervise_person: inputs[12].value.trim()
                     });
                 });
+                if (att4Data.length > 0) {
+                    const { error: att4Err } = await window.supabaseClient.from('safety_attachment4_risk_control').insert(att4Data);
+                    if (att4Err) throw att4Err;
+                }
 
-                // 7. 收集附表5数据（文件需单独上传到 Supabase Storage，此处仅记录基础信息）
+                // 8. 收集并插入附表5数据（文件需单独上传到Storage，此处仅记录基础信息）
                 const att5Data = [];
                 Array.from(document.querySelectorAll('#attachment5Table tbody tr')).forEach(tr => {
                     const inputs = tr.querySelectorAll('.att5');
                     const fileInput = tr.querySelector('.att5-file');
                     att5Data.push({
                         main_id: mainId,
-                        project_name: currentUser.project_name || '',
+                        project_name: window.currentUser.project_name,
                         serial_num: parseInt(tr.cells[0].textContent),
                         file_name: inputs[0].value.trim(),
-                        // 文件路径后续从 Storage 获取，此处先记录文件名
-                        file_path: '', 
+                        file_path: '',
                         upload_date: inputs[1].value,
-                        // 保存文件信息（需单独处理上传）
                         file_info: fileInput.files.length > 0 ? fileInput.files[0].name : ''
                     });
                 });
-
-                // 8. 插入所有附表数据
-                if (att1Data.length > 0) {
-                    const { error: att1Err } = await supabase.from('safety_attachment1_hazard').insert(att1Data);
-                    if (att1Err) throw att1Err;
-                }
-
-                if (att2Data.length > 0) {
-                    const { error: att2Err } = await supabase.from('safety_attachment2_hazard_check').insert(att2Data);
-                    if (att2Err) throw att2Err;
-                }
-
-                if (att3Data.length > 0) {
-                    const { error: att3Err } = await supabase.from('safety_attachment3_partner').insert(att3Data);
-                    if (att3Err) throw att3Err;
-                }
-
-                if (att4Data.length > 0) {
-                    const { error: att4Err } = await supabase.from('safety_attachment4_risk_control').insert(att4Data);
-                    if (att4Err) throw att4Err;
-                }
-
                 if (att5Data.length > 0) {
-                    const { error: att5Err } = await supabase.from('safety_attachment5_files').insert(att5Data);
+                    const { error: att5Err } = await window.supabaseClient.from('safety_attachment5_files').insert(att5Data);
                     if (att5Err) throw att5Err;
-                    // ========== 注意：文件上传需单独处理 ==========
-                    // 如需上传文件到 Supabase Storage，请参考以下逻辑：
-                    // for (let i = 0; i < att5Data.length; i++) {
-                    //   const fileInput = document.querySelectorAll('.att5-file')[i];
-                    //   if (fileInput.files.length > 0) {
-                    //     const file = fileInput.files[0];
-                    //     const filePath = `monthly_reports/${mainId}/${att5Data[i].serial_num}_${file.name}`;
-                    //     const { error: uploadErr } = await supabase.storage.from('safety_files').upload(filePath, file);
-                    //     if (uploadErr) throw uploadErr;
-                    //     // 更新文件路径
-                    //     await supabase.from('safety_attachment5_files').update({ file_path: filePath }).eq('main_id', mainId).eq('serial_num', att5Data[i].serial_num);
-                    //   }
-                    // }
                 }
 
                 alert('月报提交成功！');
-                form.reset();
-            } catch (err) {
-                console.error('提交失败：', err);
-                alert('提交失败：' + (err.message || '未知错误'));
+                window.resetMonthlyForm();
+
+            } catch (error) {
+                console.error('【错误】月报提交失败：', error);
+                alert('月报提交失败：' + (error.message || '未知错误，请联系管理员'));
+            } finally {
+                window.isProcessing = false;
+                submitBtn.disabled = false;
             }
-        });
+        }
     </script>
 </body>
 </html>
