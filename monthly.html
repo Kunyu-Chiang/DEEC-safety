@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>安全管理系统-月报填报</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Microsoft YaHei", sans-serif; }
+        body { background-color: #f5f7fa; padding: 20px; }
+        .header { 
+            background: linear-gradient(90deg, #003366, #0066cc);
+            color: #fff;
+            padding: 20px 30px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 { font-size: 22px; }
+        .user-info { display: flex; align-items: center; gap: 20px; }
+        .back-btn, .logout-btn { 
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .section-title { 
+            background: #e6f0ff;
+            padding: 10px 15px;
+            margin: 25px 0 15px 0;
+            border-left: 5px solid #0066cc;
+            font-weight: bold;
+            color: #003366;
+            font-size: 16px;
+        }
+        .form-row { display: flex; gap: 20px; margin-bottom: 15px; flex-wrap: wrap; }
+        .form-group { flex: 1; min-width: 200px; }
+        .form-group label { display: block; margin-bottom: 8px; color: #333; font-weight: 500; font-size: 14px; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .form-group textarea { min-height: 120px; resize: vertical; }
+        .table-box { width: 100%; overflow-x: auto; margin: 15px 0; }
+        table { width: 100%; border-collapse: collapse; }
+        table th, table td { border: 1px solid #ddd; padding: 8px 10px; font-size: 13px; text-align: left; }
+        table th { background: #f0f5ff; color: #003366; font-weight: 600; }
+        .add-row-btn { 
+            background: #28a745;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        .del-row-btn {
+            background: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .submit-btn {
+            background: #0066cc;
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            margin-right: 10px;
+        }
+        .reset-btn {
+            background: #6c757d;
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>安全环境管理工作月报填报</h1>
+            <div class="user-info">
+                <span>当前项目：<span id="currentProject"></span></span>
+                <button class="back-btn" onclick="goBack()">返回选择页</button>
+                <button class="logout-btn" onclick="logout()">退出登录</button>
+            </div>
+        </div>
+
+        <form id="monthlyForm">
+            <!-- 一、项目基础信息 -->
+            <div class="section-title">一、项目基础信息</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>项目名称</label>
+                    <input type="text" id="monthly_projectName" readonly>
+                </div>
+                <div class="form-group">
+                    <label>项目类型</label>
+                    <select id="monthly_projectType">
+                        <option value="光伏EPC">光伏EPC</option>
+                        <option value="风电EPC">风电EPC</option>
+                        <option value="储能EPC">储能EPC</option>
+                        <option value="改造EPC">改造EPC</option>
+                        <option value="综合智慧能源EPC">综合智慧能源EPC</option>
+                        <option value="其他">其他</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>所属部门</label>
+                    <input type="text" id="monthly_department" placeholder="请输入所属部门">
+                </div>
+                <div class="form-group">
+                    <label>项目负责人</label>
+                    <input type="text" id="monthly_projectLeader" placeholder="请输入项目负责人姓名">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>填报月份</label>
+                    <input type="month" id="monthly_reportMonth" required>
+                </div>
+                <div class="form-group">
+                    <label>填报人</label>
+                    <input type="text" id="monthly_reporter" required placeholder="请输入填报人姓名">
+                </div>
+                <div class="form-group">
+                    <label>填报日期</label>
+                    <input type="date" id="monthly_reportDate" required>
+                </div>
+                <div class="form-group">
+                    <label>联系电话</label>
+                    <input type="tel" id="monthly_phone" placeholder="请输入填报人联系电话">
+                </div>
+            </div>
+
+            <!-- 二、本月安全工作总体情况 -->
+            <div class="section-title">二、本月安全工作总体情况</div>
+            <div class="form-group">
+                <label>本月安全工作开展概述</label>
+                <textarea id="monthly_workOverview" placeholder="请详细描述本月安全管理工作开展情况、主要工作内容、取得的成效、存在的突出问题等"></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>本月在岗人数</label>
+                    <input type="number" id="monthly_staffCount" min="0" placeholder="请输入数字" value="0">
+                </div>
+                <div class="form-group">
+                    <label>本月进场新员工数</label>
+                    <input type="number" id="monthly_newStaffCount" min="0" placeholder="请输入数字" value="0">
+                </div>
+                <div class="form-group">
+                    <label>本月安全事故起数</label>
+                    <input type="number" id="monthly_accidentCount" min="0" placeholder="请输入数字" value="0">
+                </div>
+                <div class="form-group">
+                    <label>本月伤亡人数</label>
+                    <input type="number" id="monthly_casualtyCount" min="0" placeholder="请输入数字" value="0">
+                </div>
+            </div>
+
+            <!-- 三、安全检查及隐患整改情况 -->
+            <div class="section-title">三、安全检查及隐患整改情况</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>本月安全检查总次数</label>
+                    <input type="number" id="monthly_checkCount" min="0" placeholder="请输入数字" value="0">
+                </div>
+                <div class="form-group">
+                    <label>其中专项检查次数</label>
+                    <input type="number" id="monthly_specialCheckCount" min="0" placeholder="请输入数字" value="0">
+                </div>
+                <div class="form-group">
+                    <label>日常巡检次数</label>
+                    <input type="number" id="monthly_dailyCheckCount" min="0" placeholder="请输入数字" value="0">
+                </div>
+                <div class="form-group">
+                    <label>联合检查次数</label>
+                    <input type="number" id="monthly_jointCheckCount" min="0" placeholder="请输入数字" value="0">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>发现一般隐患数量</label>
+                    <input type="number" id="monthly_generalHazardCount" min="0" placeholder="请输入数字" value="0">
+                </div>
+                <div class="form-group">
+                    <label>发现较大隐患数量</label>
+                    <input type="number" id="monthly_majorHazardCount" min="0" placeholder="请输入数字" value="0">
+                </div>
+                <div class="form-group">
+                    <label>发现重大隐患数量</label>
+                    <input type="number" id="monthly_criticalHazardCount" min="0" placeholder="请输入数字" value="0">
+                </div>
+                <div class="form-group">
+                    <label>隐患整改完成率(%)</label>
+                    <input type="number" id="monthly_rectifyRate" min="0" max="100" placeholder="0-100" value="0">
+                </div>
+            </div>
+
+            <!-- 四、隐患整改明细表 -->
+            <div class="section-title">四、重大隐患整改明细表</div>
+            <div class="table-box">
+                <table id="monthlyHazardTable">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>隐患位置/部位</th>
+                            <th>隐患详细描述</th>
+                            <th>隐患等级</th>
+                            <th>整改措施</th>
+                            <th>整改责任人</th>
+                            <th>整改完成时限</th>
+                            <th>实际完成时间</th>
+                            <th>整改验证人</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><input type="text" class="monthly-hazard-input" placeholder="请输入"></td>
+                            <td><input type="text" class="monthly-hazard-input" placeholder="请输入"></td>
+                            <td>
+                                <select class="monthly-hazard-input">
+                                    <option value="一般">一般</option>
+                                    <option value="较大">较大</option>
+                                    <option value="重大">重大</option>
+                                </select>
+                            </td>
+                            <td><input type="text" class="monthly-hazard-input" placeholder="请输入"></td>
+                            <td><input type="text" class="monthly-hazard-input" placeholder="请输入"></td>
+                            <td><input type="date" class="monthly-hazard-input"></td>
+                            <td><input type="date" class="monthly-hazard-input"></td>
+                            <td><input type="text" class="monthly-hazard-input" placeholder="请输入"></td>
+                            <td><button type="button" class="del-row-btn" onclick="delRow(this)">删除</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <button type="button" class="add-row-btn" onclick="addHazardRow()">添加一行</button>
+
+            <!-- 五、安全培训教育情况 -->
+            <div class="section-title">五、安全培训教育情况</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>本月安全培训次数</label>
+                    <input type="number" id="monthly_trainCount" min="0" placeholder="请输入数字" value="0">
+                </div>
+                <div class="form-group">
+                    <label>培训总人数</label>
+                    <input type="number" id="monthly_trainPeople" min="0" placeholder="请输入数字" value="0">
+                </div>
+                <div class="form-group">
+                    <label>新员工培训人数</label>
+                    <input type="number" id="monthly_newStaffTrainCount" min="0" placeholder="请输入数字" value="0">
+                </div>
+                <div class="form-group">
+                    <label>特种作业人员培训人数</label>
+                    <input type="number" id="monthly_specialTrainCount" min="0" placeholder="请输入数字" value="0">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>本月培训主要内容/主题</label>
+                <textarea id="monthly_trainTheme" placeholder="请详细列出本月安全培训的主要主题、内容、培训方式等"></textarea>
+            </div>
+
+            <!-- 六、应急管理情况 -->
+            <div class="section-title">六、应急管理情况</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>本月应急演练次数</label>
+                    <input type="number" id="monthly_drillCount" min="0" placeholder="请输入数字" value="0">
+                </div>
+                <div class="form-group">
+                    <label>演练参与人数</label>
+                    <input type="number" id="monthly_drillPeople" min="0" placeholder="请输入数字" value="0">
+                </div>
+                <div class="form-group">
+                    <label>演练类型</label>
+                    <input type="text" id="monthly_drillType" placeholder="如：火灾应急演练、触电应急演练等">
+                </div>
+                <div class="form-group">
+                    <label>应急物资更新/补充次数</label>
+                    <input type="number" id="monthly_emergencyMaterialCount" min="0" placeholder="请输入数字" value="0">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>应急管理工作小结</label>
+                <textarea id="monthly_emergencySummary" placeholder="请描述本月应急管理工作开展情况、演练效果、存在的问题等"></textarea>
+            </div>
+
+            <!-- 七、下月工作计划 -->
+            <div class="section-title">七、下月安全工作计划</div>
+            <div class="form-group">
+                <label>下月重点工作安排</label>
+                <textarea id="monthly_nextPlan" placeholder="请详细列出下月安全管理工作的重点任务、计划开展的检查/培训/演练等工作、预期目标等"></textarea>
+            </div>
+
+            <!-- 八、其他需要说明的事项 -->
+            <div class="section-title">八、其他需要说明的事项</div>
+            <div class="form-group">
+                <label>其他说明</label>
+                <textarea id="monthly_otherDesc" placeholder="请输入本月安全工作中其他需要说明的事项、上级检查反馈、外部单位协作等内容"></textarea>
+            </div>
+
+            <!-- 提交按钮 -->
+            <div style="text-align: center; margin-top: 30px;">
+                <button type="submit" class="submit-btn">提交月报数据</button>
+                <button type="reset" class="reset-btn">清空表单</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // ========== 替换成你自己的Supabase配置 ==========
+        const SUPABASE_URL = "https://zmbxpsbxxjrsdzyvtiyi.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_7zW8CxAae1sFTxNLqaSjTA_nkCkzD8T";
+        // ==============================================
+
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let currentUser = null;
+
+        // 页面加载验证登录（强制校验）
+        window.onload = async function() {
+            // 1. 强制校验登录状态
+            const userStr = localStorage.getItem('currentUser');
+            if (!userStr) {
+                localStorage.removeItem('currentUser');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // 2. 校验用户信息完整性
+            try {
+                currentUser = JSON.parse(userStr);
+                if (!currentUser.id || !currentUser.username || !currentUser.project_name) {
+                    localStorage.removeItem('currentUser');
+                    window.location.href = 'login.html';
+                    return;
+                }
+                // 3. 填充项目信息
+                document.getElementById('currentProject').innerText = currentUser.project_name;
+                document.getElementById('monthly_projectName').value = currentUser.project_name;
+            } catch (e) {
+                localStorage.removeItem('currentUser');
+                window.location.href = 'login.html';
+            }
+        };
+
+        // 返回选择页
+        function goBack() {
+            window.location.href = 'select.html';
+        }
+
+        // 退出登录
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+
+        // 添加隐患行
+        function addHazardRow() {
+            const tableBody = document.querySelector('#monthlyHazardTable tbody');
+            const rows = tableBody.querySelectorAll('tr');
+            const newIndex = rows.length + 1;
+            
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${newIndex}</td>
+                <td><input type="text" class="monthly-hazard-input" placeholder="请输入"></td>
+                <td><input type="text" class="monthly-hazard-input" placeholder="请输入"></td>
+                <td>
+                    <select class="monthly-hazard-input">
+                        <option value="一般">一般</option>
+                        <option value="较大">较大</option>
+                        <option value="重大">重大</option>
+                    </select>
+                </td>
+                <td><input type="text" class="monthly-hazard-input" placeholder="请输入"></td>
+                <td><input type="text" class="monthly-hazard-input" placeholder="请输入"></td>
+                <td><input type="date" class="monthly-hazard-input"></td>
+                <td><input type="date" class="monthly-hazard-input"></td>
+                <td><input type="text" class="monthly-hazard-input" placeholder="请输入"></td>
+                <td><button type="button" class="del-row-btn" onclick="delRow(this)">删除</button></td>
+            `;
+            tableBody.appendChild(newRow);
+            
+            // 更新序号
+            updateRowNumbers();
+        }
+
+        // 删除行
+        function delRow(btn) {
+            const row = btn.closest('tr');
+            const tableBody = row.parentElement;
+            tableBody.removeChild(row);
+            
+            // 更新序号
+            updateRowNumbers();
+        }
+
+        // 更新行序号
+        function updateRowNumbers() {
+            const tableBody = document.querySelector('#monthlyHazardTable tbody');
+            const rows = tableBody.querySelectorAll('tr');
+            rows.forEach((row, index) => {
+                row.querySelector('td:first-child').textContent = index + 1;
+            });
+        }
+
+        // 月报提交逻辑（适配所有字段）
+        document.getElementById('monthlyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // 收集所有表单数据
+            const monthlyData = {
+                user_id: currentUser.id,
+                project_name: document.getElementById('monthly_projectName').value,
+                project_type: document.getElementById('monthly_projectType').value,
+                department: document.getElementById('monthly_department').value,
+                project_leader: document.getElementById('monthly_projectLeader').value,
+                report_month: document.getElementById('monthly_reportMonth').value,
+                reporter: document.getElementById('monthly_reporter').value,
+                report_date: document.getElementById('monthly_reportDate').value,
+                phone: document.getElementById('monthly_phone').value,
+                work_overview: document.getElementById('monthly_workOverview').value,
+                staff_count: parseInt(document.getElementById('monthly_staffCount').value) || 0,
+                new_staff_count: parseInt(document.getElementById('monthly_newStaffCount').value) || 0,
+                accident_count: parseInt(document.getElementById('monthly_accidentCount').value) || 0,
+                casualty_count: parseInt(document.getElementById('monthly_casualtyCount').value) || 0,
+                check_count: parseInt(document.getElementById('monthly_checkCount').value) || 0,
+                special_check_count: parseInt(document.getElementById('monthly_specialCheckCount').value) || 0,
+                daily_check_count: parseInt(document.getElementById('monthly_dailyCheckCount').value) || 0,
+                joint_check_count: parseInt(document.getElementById('monthly_jointCheckCount').value) || 0,
+                general_hazard_count: parseInt(document.getElementById('monthly_generalHazardCount').value) || 0,
+                major_hazard_count: parseInt(document.getElementById('monthly_majorHazardCount').value) || 0,
+                critical_hazard_count: parseInt(document.getElementById('monthly_criticalHazardCount').value) || 0,
+                rectify_rate: parseFloat(document.getElementById('monthly_rectifyRate').value) || 0,
+                train_count: parseInt(document.getElementById('monthly_trainCount').value) || 0,
+                train_people: parseInt(document.getElementById('monthly_trainPeople').value) || 0,
+                new_staff_train_count: parseInt(document.getElementById('monthly_newStaffTrainCount').value) || 0,
+                special_train_count: parseInt(document.getElementById('monthly_specialTrainCount').value) || 0,
+                train_theme: document.getElementById('monthly_trainTheme').value,
+                drill_count: parseInt(document.getElementById('monthly_drillCount').value) || 0,
+                drill_people: parseInt(document.getElementById('monthly_drillPeople').value) || 0,
+                drill_type: document.getElementById('monthly_drillType').value,
+                emergency_material_count: parseInt(document.getElementById('monthly_emergencyMaterialCount').value) || 0,
+                emergency_summary: document.getElementById('monthly_emergencySummary').value,
+                next_plan: document.getElementById('monthly_nextPlan').value,
+                other_desc: document.getElementById('monthly_otherDesc').value,
+                created_at: new Date().toISOString()
+            };
+
+            try {
+                // 先更新月报主表的SQL结构（添加新增字段）
+                // 执行一次即可，后续无需重复执行
+                const alterTableSql = `
+                    ALTER TABLE safety_monthly_report 
+                    ADD COLUMN IF NOT EXISTS project_type VARCHAR(50),
+                    ADD COLUMN IF NOT EXISTS project_leader VARCHAR(50),
+                    ADD COLUMN IF NOT EXISTS phone VARCHAR(20),
+                    ADD COLUMN IF NOT EXISTS staff_count INTEGER DEFAULT 0,
+                    ADD COLUMN IF NOT EXISTS new_staff_count INTEGER DEFAULT 0,
+                    ADD COLUMN IF NOT EXISTS accident_count INTEGER DEFAULT 0,
+                    ADD COLUMN IF NOT EXISTS casualty_count INTEGER DEFAULT 0,
+                    ADD COLUMN IF NOT EXISTS special_check_count INTEGER DEFAULT 0,
+                    ADD COLUMN IF NOT EXISTS daily_check_count INTEGER DEFAULT 0,
+                    ADD COLUMN IF NOT EXISTS joint_check_count INTEGER DEFAULT 0,
+                    ADD COLUMN IF NOT EXISTS general_hazard_count INTEGER DEFAULT 0,
+                    ADD COLUMN IF NOT EXISTS major_hazard_count INTEGER DEFAULT 0,
+                    ADD COLUMN IF NOT EXISTS critical_hazard_count INTEGER DEFAULT 0,
+                    ADD COLUMN IF NOT EXISTS rectify_rate FLOAT DEFAULT 0,
+                    ADD COLUMN IF NOT EXISTS new_staff_train_count INTEGER DEFAULT 0,
+                    ADD COLUMN IF NOT EXISTS special_train_count INTEGER DEFAULT 0,
+                    ADD COLUMN IF NOT EXISTS drill_count INTEGER DEFAULT 0,
+                    ADD COLUMN IF NOT EXISTS drill_people INTEGER DEFAULT 0,
+                    ADD COLUMN IF NOT EXISTS drill_type VARCHAR(100),
+                    ADD COLUMN IF NOT EXISTS emergency_material_count INTEGER DEFAULT 0,
+                    ADD COLUMN IF NOT EXISTS emergency_summary TEXT,
+                    ADD COLUMN IF NOT EXISTS other_desc TEXT;
+                    
+                    ALTER TABLE monthly_hazard_detail 
+                    ADD COLUMN IF NOT EXISTS hazard_location VARCHAR(200),
+                    ADD COLUMN IF NOT EXISTS hazard_level VARCHAR(20) DEFAULT '一般',
+                    ADD COLUMN IF NOT EXISTS rectify_deadline DATE,
+                    ADD COLUMN IF NOT EXISTS actual_rectify_date DATE,
+                    ADD COLUMN IF NOT EXISTS rectify_verifier VARCHAR(50);
+                `;
+                
+                // 执行表结构更新（仅首次提交时需要）
+                await supabase.rpc('exec_sql', { sql: alterTableSql });
+
+                // 提交主表数据
+                const { data: reportData, error: reportError } = await supabase
+                    .from('safety_monthly_report')
+                    .insert([monthlyData])
+                    .select('id')
+                    .single();
+
+                if (reportError) throw reportError;
+
+                // 收集隐患明细数据
+                const hazardRows = document.querySelectorAll('#monthlyHazardTable tbody tr');
+                const hazardData = [];
+                
+                hazardRows.forEach((row, index) => {
+                    const inputs = row.querySelectorAll('.monthly-hazard-input');
+                    hazardData.push({
+                        report_id: reportData.id,
+                        project_name: currentUser.project_name,
+                        serial_number: index + 1,
+                        hazard_location: inputs[0].value,
+                        hazard_desc: inputs[1].value,
+                        hazard_level: inputs[2].value,
+                        rectify_measure: inputs[3].value,
+                        rectify_person: inputs[4].value,
+                        rectify_deadline: inputs[5].value,
+                        actual_rectify_date: inputs[6].value,
+                        rectify_verifier: inputs[7].value
+                    });
+                });
+
+                // 提交隐患明细
+                if (hazardData.length > 0) {
+                    const { error: hazardError } = await supabase
+                        .from('monthly_hazard_detail')
+                        .insert(hazardData);
+                    
+                    if (hazardError) throw hazardError;
+                }
+
+                alert('月报提交成功！');
+                document.getElementById('monthlyForm').reset();
+                
+                // 重置表格为初始状态
+                const tableBody = document.querySelector('#monthlyHazardTable tbody');
+                tableBody.innerHTML = `
+                    <tr>
+                        <td>1</td>
+                        <td><input type="text" class="monthly-hazard-input" placeholder="请输入"></td>
+                        <td><input type="text" class="monthly-hazard-input" placeholder="请输入"></td>
+                        <td>
+                            <select class="monthly-hazard-input">
+                                <option value="一般">一般</option>
+                                <option value="较大">较大</option>
+                                <option value="重大">重大</option>
+                            </select>
+                        </td>
+                        <td><input type="text" class="monthly-hazard-input" placeholder="请输入"></td>
+                        <td><input type="text" class="monthly-hazard-input" placeholder="请输入"></td>
+                        <td><input type="date" class="monthly-hazard-input"></td>
+                        <td><input type="date" class="monthly-hazard-input"></td>
+                        <td><input type="text" class="monthly-hazard-input" placeholder="请输入"></td>
+                        <td><button type="button" class="del-row-btn" onclick="delRow(this)">删除</button></td>
+                    </tr>
+                `;
+
+            } catch (error) {
+                console.error('月报提交失败：', error);
+                alert('月报提交失败：' + error.message);
+            }
+        });
+    </script>
+</body>
+</html>

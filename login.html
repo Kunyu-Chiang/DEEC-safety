@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>东方设计安全管理系统-登录</title>
+    <title>安全管理系统-登录</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Microsoft YaHei", sans-serif; }
@@ -84,8 +84,8 @@
 <body>
     <div class="login-box">
         <div class="logo-title">
-            <h1>东方设计安全管理系统</h1>
-            <p></p>
+            <h1>工程项目安全管理系统</h1>
+            <p>安全环境管理周/月报填报系统</p>
         </div>
         <form id="loginForm">
             <div class="form-group">
@@ -102,10 +102,10 @@
     </div>
 
     <script>
-        // ===================== 仅需替换这里的2个值！=====================
+        // ========== 替换成你自己的Supabase配置 ==========
         const SUPABASE_URL = "https://zmbxpsbxxjrsdzyvtiyi.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_7zW8CxAae1sFTxNLqaSjTA_nkCkzD8T";
-        // =================================================================
+        // ==============================================
 
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -115,6 +115,9 @@
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
             const errorMsg = document.getElementById('errorMsg');
+
+            // 清空错误提示
+            errorMsg.style.display = 'none';
 
             // 验证账号密码
             const { data, error } = await supabase
@@ -131,8 +134,8 @@
 
             // 登录成功，保存用户信息到本地
             localStorage.setItem('currentUser', JSON.stringify(data));
-            // 跳转到填报页
-            window.location.href = 'index.html';
+            // 跳转到选择页
+            window.location.href = 'select.html';
         });
     </script>
 </body>
