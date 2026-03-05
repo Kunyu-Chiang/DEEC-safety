@@ -264,15 +264,20 @@
             if (window.isProcessing) return;
             window.isProcessing = true;
             try {
-                await loadDashboardCards();
-                await loadChartData();
-                await loadFillProgress();
-                await loadDangerSummary();
+                await Promise.all([
+                    loadDashboardCards(),
+                    loadTrendChart(),
+                    loadLevelChart(),
+                    loadRankChart(),
+                    loadTypeChart(),
+                    loadFillProgress(),
+                    loadDangerSummary()
+                ]);
             } catch (e) { console.error('数据加载失败：', e); alert('数据加载失败：' + e.message); }
             finally { window.isProcessing = false; }
         }
 
-        // ========== 1. 加载驾驶舱（真实查询） ==========
+        // ========== 1. 加载驾驶舱（100%真实查询） ==========
         async function loadDashboardCards() {
             try {
                 // 1.1 总项目数
@@ -329,67 +334,193 @@
             } catch (e) { console.error('驾驶舱加载失败：', e); throw e; }
         }
 
-        // ========== 2. 加载图表（模拟数据，可替换为真实查询） ==========
-        async function loadChartData() {
-            const trendData = {
-                months: ['2025-10', '2025-11', '2025-12', '2026-01', '2026-02', '2026-03'],
-                total: [25, 32, 28, 22, 18, 15],
-                rectified: [22, 30, 26, 20, 17, 14]
-            };
-            const levelData = [
-                { value: 105, name: '一般' },
-                { value: 21, name: '较大' },
-                { value: 2, name: '重大' }
-            ];
-            const rankData = {
-                projects: ['光伏项目A', '风电项目B', '储能项目C', '改造项目D', '综合能源E'],
-                counts: [35, 28, 25, 22, 18]
-            };
-            const typeData = [
-                { value: 30, name: '高处坠落' },
-                { value: 25, name: '物体打击' },
-                { value: 20, name: '车辆伤害' },
-                { value: 15, name: '触电' },
-                { value: 38, name: '其他' }
-            ];
+        // ========== 2. 加载近6个月隐患趋势图（100%真实查询） ==========
+        async function loadTrendChart() {
+            try {
+                // 生成近6个月的月份数组
+                const months = [];
+                const now = new Date();
+                for (let i = 5; i >= 0; i--) {
+                    const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                    months.push(`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`);
+                }
 
-            trendChart.setOption({
-                tooltip: { trigger: 'axis' },
-                legend: { data: ['发现隐患数', '整改完成数'] },
-                xAxis: { type: 'category', data: trendData.months },
-                yAxis: { type: 'value' },
-                series: [
-                    { name: '发现隐患数', type: 'line', smooth: true, data: trendData.total, itemStyle: { color: '#0066cc' } },
-                    { name: '整改完成数', type: 'line', smooth: true, data: trendData.rectified, itemStyle: { color: '#28a745' } }
-                ]
-            });
+                // 并行查询每个月的隐患数据
+                const totalPromises = months.map(month => 
+                    window.supabaseClient
+                        .from('safety_attachment2_hazard_check')
+                        .select('*', { count: 'exact', head: true })
+                        .like('check_date', month + '%')
+                );
+                const rectifiedPromises = months.map(month => 
+                    window.supabaseClient
+                        .from('safety_attachment2_hazard_check')
+                        .select('*', { count: 'exact', head: true })
+                        .like('check_date', month + '%')
+                        .eq('hazard_eliminated', true)
+                );
 
-            levelChart.setOption({
-                tooltip: { trigger: 'item' },
-                legend: { bottom: '0%' },
-                series: [{
-                    type: 'pie',
-                    radius: ['40%', '70%'],
-                    data: levelData,
-                    itemStyle: { colors: ['#28a745', '#ffc107', '#dc3545'] }
-                }]
-            });
+                const totalResults = await Promise.all(totalPromises);
+                const rectifiedResults = await Promise.all(rectifiedPromises);
 
-            rankChart.setOption({
-                tooltip: { trigger: 'axis' },
-                xAxis: { type: 'category', data: rankData.projects, axisLabel: { rotate: 30 } },
-                yAxis: { type: 'value' },
-                series: [{ type: 'bar', data: rankData.counts, itemStyle: { color: '#0066cc' } }]
-            });
+                const totalData = totalResults.map(r => r.count || 0);
+                const rectifiedData = rectifiedResults.map(r => r.count || 0);
 
-            typeChart.setOption({
-                tooltip: { trigger: 'item' },
-                legend: { bottom: '0%' },
-                series: [{ type: 'pie', radius: ['30%', '60%'], data: typeData }]
-            });
+                trendChart.setOption({
+                    tooltip: { trigger: 'axis' },
+                    legend: { data: ['发现隐患数', '整改完成数'] },
+                    xAxis: { type: 'category', data: months },
+                    yAxis: { type: 'value' },
+                    series: [
+                        { name: '发现隐患数', type: 'line', smooth: true, data: totalData, itemStyle: { color: '#0066cc' } },
+                        { name: '整改完成数', type: 'line', smooth: true, data: rectifiedData, itemStyle: { color: '#28a745' } }
+                    ]
+                });
+
+            } catch (e) { console.error('趋势图加载失败：', e); throw e; }
         }
 
-        // ========== 3. 加载填报进度（真实查询） ==========
+        // ========== 3. 加载隐患等级分布图（100%真实查询） ==========
+        async function loadLevelChart() {
+            try {
+                // 查询各等级隐患数量
+                const [generalRes, importantRes, majorRes] = await Promise.all([
+                    window.supabaseClient.from('safety_attachment2_hazard_check').select('*', { count: 'exact', head: true }).eq('hazard_level', '一般隐患'),
+                    window.supabaseClient.from('safety_attachment2_hazard_check').select('*', { count: 'exact', head: true }).eq('hazard_level', '较大隐患'),
+                    window.supabaseClient.from('safety_attachment2_hazard_check').select('*', { count: 'exact', head: true }).eq('hazard_level', '重大隐患')
+                ]);
+
+                const levelData = [
+                    { value: generalRes.count || 0, name: '一般' },
+                    { value: importantRes.count || 0, name: '较大' },
+                    { value: majorRes.count || 0, name: '重大' }
+                ].filter(item => item.value > 0); // 过滤掉数量为0的
+
+                levelChart.setOption({
+                    tooltip: { trigger: 'item' },
+                    legend: { bottom: '0%' },
+                    series: [{
+                        type: 'pie',
+                        radius: ['40%', '70%'],
+                        data: levelData,
+                        itemStyle: {
+                            color: function(params) {
+                                const colorList = ['#28a745', '#ffc107', '#dc3545'];
+                                return colorList[params.dataIndex];
+                            }
+                        }
+                    }]
+                });
+
+            } catch (e) { console.error('等级分布图加载失败：', e); throw e; }
+        }
+
+        // ========== 4. 加载各项目隐患排名图（100%真实查询） ==========
+        async function loadRankChart() {
+            try {
+                // 1. 获取所有项目
+                const { data: users, error: userErr } = await window.supabaseClient
+                    .from('users')
+                    .select('project_name')
+                    .eq('role', 'user');
+                if (userErr) throw userErr;
+
+                if (!users || users.length === 0) {
+                    rankChart.setOption({
+                        title: { text: '暂无项目数据', left: 'center', top: 'center' },
+                        xAxis: { type: 'category', data: [] },
+                        yAxis: { type: 'value' },
+                        series: []
+                    });
+                    return;
+                }
+
+                // 2. 并行查询每个项目的隐患数量
+                const projectNames = users.map(u => u.project_name);
+                const countPromises = projectNames.map(project => 
+                    window.supabaseClient
+                        .from('safety_attachment2_hazard_check')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('project_name', project)
+                );
+
+                const countResults = await Promise.all(countPromises);
+
+                // 3. 组装数据并排序（取前10名）
+                const projectData = projectNames.map((name, index) => ({
+                    name: name,
+                    count: countResults[index].count || 0
+                })).sort((a, b) => b.count - a.count).slice(0, 10);
+
+                rankChart.setOption({
+                    tooltip: { trigger: 'axis' },
+                    xAxis: { 
+                        type: 'category', 
+                        data: projectData.map(d => d.name),
+                        axisLabel: { rotate: 30, interval: 0 }
+                    },
+                    yAxis: { type: 'value' },
+                    series: [{
+                        type: 'bar',
+                        data: projectData.map(d => d.count),
+                        itemStyle: { color: '#0066cc' },
+                        label: { show: true, position: 'top' }
+                    }]
+                });
+
+            } catch (e) { console.error('项目排名图加载失败：', e); throw e; }
+        }
+
+        // ========== 5. 加载事故/事件类型分布图（100%真实查询） ==========
+        async function loadTypeChart() {
+            try {
+                // 定义所有可能的事故类型
+                const allTypes = [
+                    '车辆伤害', '物体打击', '起重伤害', '淹溺', '灼烫', '火灾',
+                    '高处坠落', '坍塌', '冒顶片帮', '透水', '放炮', '火药爆炸',
+                    '瓦斯爆炸', '锅炉爆炸', '容器爆炸', '其它爆炸', '中毒和窒息',
+                    '其它伤害', '粉尘', '噪音', '辐射', '管理隐患'
+                ];
+
+                // 并行查询每个类型的数量
+                const typePromises = allTypes.map(type => 
+                    window.supabaseClient
+                        .from('safety_attachment2_hazard_check')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('hazard_category', type)
+                );
+
+                const typeResults = await Promise.all(typePromises);
+
+                // 组装数据（过滤掉数量为0的，取前10名）
+                const typeData = allTypes.map((name, index) => ({
+                    name: name,
+                    value: typeResults[index].count || 0
+                })).filter(item => item.value > 0).sort((a, b) => b.value - a.value).slice(0, 10);
+
+                if (typeData.length === 0) {
+                    typeChart.setOption({
+                        title: { text: '暂无类型数据', left: 'center', top: 'center' },
+                        series: []
+                    });
+                    return;
+                }
+
+                typeChart.setOption({
+                    tooltip: { trigger: 'item' },
+                    legend: { bottom: '0%' },
+                    series: [{
+                        type: 'pie',
+                        radius: ['30%', '60%'],
+                        data: typeData,
+                        label: { show: true, formatter: '{b}: {c}' }
+                    }]
+                });
+
+            } catch (e) { console.error('类型分布图加载失败：', e); throw e; }
+        }
+
+        // ========== 6. 加载填报进度（100%真实查询） ==========
         async function loadFillProgress() {
             const tbody = document.getElementById('fillProgressTbody');
             try {
@@ -441,7 +572,7 @@
             } catch (e) { console.error('填报进度加载失败：', e); tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">加载失败</td></tr>'; throw e; }
         }
 
-        // ========== 4. 加载隐患汇总（真实查询） ==========
+        // ========== 7. 加载隐患汇总（100%真实查询） ==========
         async function loadDangerSummary() {
             const tbody = document.getElementById('dangerSummaryTbody');
             try {
@@ -449,16 +580,16 @@
                     .from('safety_attachment2_hazard_check')
                     .select('*')
                     .order('created_at', { ascending: false })
-                    .limit(50);
+                    .limit(100);
                 if (dangerErr) throw dangerErr;
 
                 tbody.innerHTML = (dangers || []).map(item => {
                     let levelClass = 'status-green';
                     let statusClass = 'status-green';
-                    if (item.hazard_level === '较大隐患') levelClass = 'status-yellow';
+                    if (item.hazard_level === '一般隐患') levelClass = 'status-yellow';
                     if (item.hazard_level === '重大隐患') levelClass = 'status-red';
                     if (!item.hazard_eliminated) statusClass = 'status-yellow';
-                    if (!item.hazard_eliminated && new Date(item.rectify_deadline) < new Date()) statusClass = 'status-red';
+                    if (!item.hazard_eliminated && item.rectify_deadline && new Date(item.rectify_deadline) < new Date()) statusClass = 'status-red';
 
                     return `
                         <tr>
