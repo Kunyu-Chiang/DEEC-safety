@@ -39,8 +39,8 @@
         .form-group textarea { min-height: 100px; resize: vertical; }
         .table-box { width: 100%; overflow-x: auto; margin: 15px 0; }
         table { width: 100%; border-collapse: collapse; }
-        table th, table td { border: 1px solid #ddd; padding: 8px 10px; font-size: 13px; }
-        table th { background: #f0f5ff; color: #003366; text-align: left; }
+        table th, table td { border: 1px solid #ddd; padding: 8px 10px; font-size: 13px; text-align: left; }
+        table th { background: #f0f5ff; color: #003366; font-weight: 600; }
         .table-btn { display: flex; gap: 10px; margin: 10px 0; }
         .add-btn { background: #28a745; color: #fff; border: none; padding: 6px 15px; border-radius: 4px; cursor: pointer; }
         .add-btn:disabled { opacity: 0.6; cursor: not-allowed; }
@@ -62,38 +62,21 @@
 
     <div class="container">
         <form id="monthlyForm">
-            <!-- 一、基础信息 -->
             <div class="section-title">一、本月安全生产及环保工作情况概述</div>
             <div class="form-row">
-                <div class="form-group">
-                    <label>项目名称</label>
-                    <input type="text" id="projectName" readonly>
-                </div>
-                <div class="form-group">
-                    <label>部门</label>
-                    <input type="text" id="department" placeholder="请填写所属部门" required>
-                </div>
-                <div class="form-group">
-                    <label>填报月份</label>
-                    <input type="month" id="reportMonth" required>
-                </div>
+                <div class="form-group"><label>项目名称</label><input type="text" id="projectName" readonly></div>
+                <div class="form-group"><label>部门</label><input type="text" id="department" placeholder="请填写所属部门" required></div>
+                <div class="form-group"><label>填报月份</label><input type="month" id="reportMonth" required></div>
             </div>
             <div class="form-row">
-                <div class="form-group">
-                    <label>填报人</label>
-                    <input type="text" id="reporter" required placeholder="请填写填报人姓名">
-                </div>
-                <div class="form-group">
-                    <label>填报日期</label>
-                    <input type="date" id="reportDate" required>
-                </div>
+                <div class="form-group"><label>填报人</label><input type="text" id="reporter" required placeholder="请填写填报人姓名"></div>
+                <div class="form-group"><label>填报日期</label><input type="date" id="reportDate" required></div>
             </div>
             <div class="form-group">
                 <label>本月安全生产及环保工作情况概述</label>
                 <textarea id="workOverview" placeholder="请概述本月工作情况、成效、问题等" required></textarea>
             </div>
 
-            <!-- 二、安全生产数据统计 -->
             <div class="section-title">二、安全生产数据统计</div>
             <div class="form-row">
                 <div class="form-group"><label>公司项目部人员数量</label><input type="number" id="companyStaffNum" min="0" value="0" required></div>
@@ -132,7 +115,6 @@
                 <input type="number" id="contractorPunishAmount" min="0" step="0.01" value="0" required>
             </div>
 
-            <!-- 三、事故情况 -->
             <div class="section-title">三、事故情况</div>
             <div class="form-row">
                 <div class="form-group"><label>未遂事件起数</label><input type="number" id="nearMissCount" min="0" value="0" required></div>
@@ -151,7 +133,6 @@
                 <input type="number" id="contractSignedCount" min="0" value="0" required>
             </div>
 
-            <!-- 四、突出贡献 -->
             <div class="section-title">四、突出贡献情况</div>
             <div class="form-group">
                 <label>安全环保管理创新、科技兴安突出成果</label>
@@ -162,13 +143,11 @@
                 <textarea id="emergencyContribution" placeholder="请填写应急处置案例、贡献等" required></textarea>
             </div>
 
-            <!-- 五、安全问题 -->
             <div class="section-title">五、本月主要存在的安全问题</div>
             <div class="form-group">
                 <textarea id="safetyProblem" placeholder="请填写本月存在的安全隐患、管理问题等" required></textarea>
             </div>
 
-            <!-- 附表1：重大、重要危险源清单 -->
             <div class="section-title">附表1：重大、重要危险源清单</div>
             <div class="table-box">
                 <table id="attachment1Table">
@@ -195,27 +174,12 @@
                             <td>
                                 <select class="att1" required>
                                     <option value="">请选择</option>
-                                    <option value="车辆伤害">车辆伤害</option>
-                                    <option value="物体打击">物体打击</option>
-                                    <option value="起重伤害">起重伤害</option>
-                                    <option value="淹溺">淹溺</option>
-                                    <option value="灼烫">灼烫</option>
-                                    <option value="火灾">火灾</option>
-                                    <option value="高处坠落">高处坠落</option>
-                                    <option value="坍塌">坍塌</option>
-                                    <option value="冒顶片帮">冒顶片帮</option>
-                                    <option value="透水">透水</option>
-                                    <option value="放炮">放炮</option>
-                                    <option value="火药爆炸">火药爆炸</option>
-                                    <option value="瓦斯爆炸">瓦斯爆炸</option>
-                                    <option value="锅炉爆炸">锅炉爆炸</option>
-                                    <option value="容器爆炸">容器爆炸</option>
-                                    <option value="其它爆炸">其它爆炸</option>
-                                    <option value="中毒和窒息">中毒和窒息</option>
-                                    <option value="其它伤害">其它伤害</option>
-                                    <option value="粉尘">粉尘</option>
-                                    <option value="噪音">噪音</option>
-                                    <option value="辐射">辐射</option>
+                                    <option value="车辆伤害">车辆伤害</option><option value="物体打击">物体打击</option><option value="起重伤害">起重伤害</option>
+                                    <option value="淹溺">淹溺</option><option value="灼烫">灼烫</option><option value="火灾">火灾</option><option value="高处坠落">高处坠落</option>
+                                    <option value="坍塌">坍塌</option><option value="冒顶片帮">冒顶片帮</option><option value="透水">透水</option><option value="放炮">放炮</option>
+                                    <option value="火药爆炸">火药爆炸</option><option value="瓦斯爆炸">瓦斯爆炸</option><option value="锅炉爆炸">锅炉爆炸</option><option value="容器爆炸">容器爆炸</option>
+                                    <option value="其它爆炸">其它爆炸</option><option value="中毒和窒息">中毒和窒息</option><option value="其它伤害">其它伤害</option>
+                                    <option value="粉尘">粉尘</option><option value="噪音">噪音</option><option value="辐射">辐射</option>
                                 </select>
                             </td>
                             <td><input type="text" class="att1" placeholder="填写措施" required></td>
@@ -228,7 +192,6 @@
             </div>
             <div class="table-btn"><button type="button" class="add-btn" id="addAtt1">新增一行</button></div>
 
-            <!-- 附表2：隐患排查治理台账 -->
             <div class="section-title">附表2：安全生产隐患排查治理信息统计表</div>
             <div class="table-box">
                 <table id="attachment2Table">
@@ -251,10 +214,8 @@
                             <td>
                                 <select class="att2" required>
                                     <option value="">请选择</option>
-                                    <option value="日常检查">日常检查</option>
-                                    <option value="专项检查">专项检查</option>
-                                    <option value="联合检查">联合检查</option>
-                                    <option value="季节性检查">季节性检查</option>
+                                    <option value="日常检查">日常检查</option><option value="专项检查">专项检查</option>
+                                    <option value="联合检查">联合检查</option><option value="季节性检查">季节性检查</option>
                                 </select>
                             </td>
                             <td><input type="date" class="att2" required></td>
@@ -263,28 +224,12 @@
                             <td>
                                 <select class="att2" required>
                                     <option value="">请选择</option>
-                                    <option value="管理隐患">管理隐患</option>
-                                    <option value="车辆伤害">车辆伤害</option>
-                                    <option value="物体打击">物体打击</option>
-                                    <option value="起重伤害">起重伤害</option>
-                                    <option value="淹溺">淹溺</option>
-                                    <option value="灼烫">灼烫</option>
-                                    <option value="火灾">火灾</option>
-                                    <option value="高处坠落">高处坠落</option>
-                                    <option value="坍塌">坍塌</option>
-                                    <option value="冒顶片帮">冒顶片帮</option>
-                                    <option value="透水">透水</option>
-                                    <option value="放炮">放炮</option>
-                                    <option value="火药爆炸">火药爆炸</option>
-                                    <option value="瓦斯爆炸">瓦斯爆炸</option>
-                                    <option value="锅炉爆炸">锅炉爆炸</option>
-                                    <option value="容器爆炸">容器爆炸</option>
-                                    <option value="其它爆炸">其它爆炸</option>
-                                    <option value="中毒和窒息">中毒和窒息</option>
-                                    <option value="其它伤害">其它伤害</option>
-                                    <option value="粉尘">粉尘</option>
-                                    <option value="噪音">噪音</option>
-                                    <option value="辐射">辐射</option>
+                                    <option value="管理隐患">管理隐患</option><option value="车辆伤害">车辆伤害</option><option value="物体打击">物体打击</option>
+                                    <option value="起重伤害">起重伤害</option><option value="淹溺">淹溺</option><option value="灼烫">灼烫</option><option value="火灾">火灾</option>
+                                    <option value="高处坠落">高处坠落</option><option value="坍塌">坍塌</option><option value="冒顶片帮">冒顶片帮</option><option value="透水">透水</option>
+                                    <option value="放炮">放炮</option><option value="火药爆炸">火药爆炸</option><option value="瓦斯爆炸">瓦斯爆炸</option><option value="锅炉爆炸">锅炉爆炸</option>
+                                    <option value="容器爆炸">容器爆炸</option><option value="其它爆炸">其它爆炸</option><option value="中毒和窒息">中毒和窒息</option><option value="其它伤害">其它伤害</option>
+                                    <option value="粉尘">粉尘</option><option value="噪音">噪音</option><option value="辐射">辐射</option>
                                 </select>
                             </td>
                             <td>
@@ -316,7 +261,6 @@
             </div>
             <div class="table-btn"><button type="button" class="add-btn" id="addAtt2">新增一行</button></div>
 
-            <!-- 附表3：相关方安全信息 -->
             <div class="section-title">附表3：相关方安全信息统计表</div>
             <div class="table-box">
                 <table id="attachment3Table">
@@ -368,7 +312,6 @@
             </div>
             <div class="table-btn"><button type="button" class="add-btn" id="addAtt3">新增一行</button></div>
 
-            <!-- 附表4：风险管控清单 -->
             <div class="section-title">附表4：项目安全风险管控清单</div>
             <div class="table-box">
                 <table id="attachment4Table">
@@ -390,10 +333,8 @@
                             <td>
                                 <select class="att4" required>
                                     <option value="">请选择</option>
-                                    <option value="设备风险">设备风险</option>
-                                    <option value="作业风险">作业风险</option>
-                                    <option value="环境风险">环境风险</option>
-                                    <option value="管理风险">管理风险</option>
+                                    <option value="设备风险">设备风险</option><option value="作业风险">作业风险</option>
+                                    <option value="环境风险">环境风险</option><option value="管理风险">管理风险</option>
                                 </select>
                             </td>
                             <td>
@@ -423,7 +364,6 @@
             </div>
             <div class="table-btn"><button type="button" class="add-btn" id="addAtt4">新增一行</button></div>
 
-            <!-- 附表5：工作照片/附件 -->
             <div class="section-title">附表5：安全管理工作照片/附件</div>
             <div class="table-box">
                 <table id="attachment5Table">
@@ -445,7 +385,6 @@
             </div>
             <div class="table-btn"><button type="button" class="add-btn" id="addAtt5">新增一行</button></div>
 
-            <!-- 提交按钮 -->
             <div class="submit-area">
                 <button type="button" class="submit-btn" id="submitBtn">提交月报数据</button>
                 <button type="button" class="reset-btn" id="resetBtn">清空表单</button>
@@ -454,23 +393,18 @@
     </div>
 
     <script>
-        // ================ 全局配置&状态（挂载到window，确保全局可访问） ================
-        window.SUPABASE_URL = "https://zmbxpsbxxjrsdzyvtiyi.supabase.co";
-        window.SUPABASE_ANON_KEY = "sb_publishable_7zW8CxAae1sFTxNLqaSjTA_nkCkzD8T";
+        // ========== 全局配置 ==========
+        const SUPABASE_URL = "https://zmbxpsbxxjrsdzyvtiyi.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_7zW8CxAae1sFTxNLqaSjTA_nkCkzD8T";
+        
         window.isProcessing = false;
         window.currentUser = null;
         window.supabaseClient = null;
 
-        // ================ 通用表格操作函数（挂载到window，解决作用域问题） ================
-        // 通用新增行函数
+        // ========== 通用函数 ==========
         window.addTableRow = function(tableId, className) {
-            if (window.isProcessing) {
-                console.log('【日志】操作进行中，拦截新增请求');
-                return;
-            }
+            if (window.isProcessing) return;
             window.isProcessing = true;
-            console.log('【日志】开始新增行，表格ID：', tableId);
-
             try {
                 const table = document.getElementById(tableId);
                 if (!table) throw new Error(`未找到表格：${tableId}`);
@@ -479,9 +413,7 @@
                 const newRow = lastRow.cloneNode(true);
                 const serialNum = tbody.children.length + 1;
                 
-                // 重置序号
                 newRow.cells[0].textContent = serialNum;
-                // 重置输入值
                 newRow.querySelectorAll(`.${className}`).forEach(el => {
                     switch(el.type) {
                         case 'number': el.value = 0; break;
@@ -491,68 +423,40 @@
                         default: el.value = '';
                     }
                 });
-                // 单独清空文件输入框
                 newRow.querySelectorAll('.att5-file').forEach(el => el.value = '');
-                // 重新绑定删除按钮事件
+                
                 const delBtn = newRow.querySelector('.del-btn');
-                delBtn.addEventListener('click', function() {
-                    window.delTableRow(tableId, this);
-                });
+                delBtn.addEventListener('click', function() { window.delTableRow(tableId, this); });
                 
                 tbody.appendChild(newRow);
-                console.log('【日志】新增行成功，当前行数：', serialNum);
                 alert('新增行成功！');
-
-            } catch (e) {
-                console.error('【错误】新增行失败：', e);
-                alert('新增行失败：' + e.message);
-            } finally {
-                window.isProcessing = false;
-            }
+            } catch (e) { console.error('新增失败：', e); alert('新增失败：' + e.message); }
+            finally { window.isProcessing = false; }
         };
 
-        // 通用删除行函数
         window.delTableRow = function(tableId, btn) {
-            if (window.isProcessing) {
-                console.log('【日志】操作进行中，拦截删除请求');
-                return;
-            }
+            if (window.isProcessing) return;
             try {
-                // 兼容写法找tr
                 let row = btn.parentNode;
-                while (row && row.tagName !== 'TR') {
-                    row = row.parentNode;
-                }
+                while (row && row.tagName !== 'TR') row = row.parentNode;
                 if (!row) throw new Error('未找到要删除的行');
                 const table = document.getElementById(tableId);
                 const tbody = table.querySelector('tbody');
                 
-                // 保留至少1行
-                if (tbody.children.length <= 1) {
-                    alert('至少需要保留1行数据！');
-                    return;
-                }
-                
+                if (tbody.children.length <= 1) { alert('至少需要保留1行数据！'); return; }
                 tbody.removeChild(row);
-                // 重新排序号
+                
                 Array.from(tbody.children).forEach((tr, idx) => {
                     tr.cells[0].textContent = idx + 1;
                 });
-                console.log('【日志】删除行成功');
-
-            } catch (e) {
-                console.error('【错误】删除行失败：', e);
-                alert('删除失败：' + e.message);
-            }
+            } catch (e) { console.error('删除失败：', e); alert('删除失败：' + e.message); }
         };
 
-        // 表单重置函数
         window.resetMonthlyForm = function() {
             if (window.isProcessing) return;
             document.getElementById('monthlyForm').reset();
-            // 重新填充项目名称
             document.getElementById('projectName').value = window.currentUser?.project_name || '';
-            // 重置所有附表为初始状态
+            
             const tableConfigs = [
                 { id: 'attachment1Table', class: 'att1' },
                 { id: 'attachment2Table', class: 'att2' },
@@ -563,77 +467,43 @@
             tableConfigs.forEach(config => {
                 const tbody = document.querySelector(`#${config.id} tbody`);
                 tbody.innerHTML = tbody.firstElementChild.outerHTML;
-                // 重新绑定初始行的删除事件
                 const delBtn = tbody.querySelector('.del-btn');
-                delBtn.addEventListener('click', function() {
-                    window.delTableRow(config.id, this);
-                });
+                delBtn.addEventListener('click', function() { window.delTableRow(config.id, this); });
             });
         };
 
-        // ================ 页面初始化 ================
+        // ========== 页面初始化 ==========
         window.addEventListener('DOMContentLoaded', async function() {
-            console.log('【日志】月报页DOM加载完成，开始初始化');
-            // 1. 初始化Supabase（容错处理）
             try {
                 const { createClient } = window.supabase;
-                window.supabaseClient = createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
-                console.log('【日志】Supabase初始化成功');
-            } catch (e) {
-                console.error('【错误】Supabase初始化失败：', e);
-                alert('系统初始化失败，部分功能可能异常，请刷新重试');
-            }
+                window.supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            } catch (e) { console.error('Supabase初始化失败：', e); alert('系统初始化失败，请刷新重试'); }
 
-            // 2. 登录状态校验
             try {
                 const userStr = localStorage.getItem('currentUser');
-                if (!userStr) {
-                    alert('未检测到登录信息，请重新登录');
-                    window.location.href = 'index.html';
-                    return;
-                }
+                if (!userStr) { alert('未检测到登录信息，请重新登录'); window.location.href = 'index.html'; return; }
                 window.currentUser = JSON.parse(userStr);
                 if (!window.currentUser.id || !window.currentUser.username || !window.currentUser.project_name) {
                     throw new Error('用户信息不完整');
                 }
                 document.getElementById('projectName').value = window.currentUser.project_name;
-                console.log('【日志】用户信息加载成功：', window.currentUser.project_name);
             } catch (e) {
-                console.error('【错误】用户信息解析失败：', e);
+                console.error('用户信息解析失败：', e);
                 localStorage.removeItem('currentUser');
                 alert('登录状态异常，请重新登录');
                 window.location.href = 'index.html';
                 return;
             }
 
-            // 3. 绑定所有按钮事件（替代内联onclick，更稳定）
-            // 头部按钮
-            document.getElementById('backBtn').addEventListener('click', function() {
-                if (window.isProcessing) return;
-                window.location.href = 'select.html';
-            });
-            document.getElementById('logoutBtn').addEventListener('click', function() {
-                if (window.isProcessing) return;
-                localStorage.removeItem('currentUser');
-                window.location.href = 'index.html';
-            });
-            // 附表新增按钮
-            document.getElementById('addAtt1').addEventListener('click', function() {
-                window.addTableRow('attachment1Table', 'att1');
-            });
-            document.getElementById('addAtt2').addEventListener('click', function() {
-                window.addTableRow('attachment2Table', 'att2');
-            });
-            document.getElementById('addAtt3').addEventListener('click', function() {
-                window.addTableRow('attachment3Table', 'att3');
-            });
-            document.getElementById('addAtt4').addEventListener('click', function() {
-                window.addTableRow('attachment4Table', 'att4');
-            });
-            document.getElementById('addAtt5').addEventListener('click', function() {
-                window.addTableRow('attachment5Table', 'att5');
-            });
-            // 初始行删除按钮
+            // 绑定事件
+            document.getElementById('backBtn').addEventListener('click', function() { if (window.isProcessing) return; window.location.href = 'select.html'; });
+            document.getElementById('logoutBtn').addEventListener('click', function() { if (window.isProcessing) return; localStorage.removeItem('currentUser'); window.location.href = 'index.html'; });
+            document.getElementById('addAtt1').addEventListener('click', function() { window.addTableRow('attachment1Table', 'att1'); });
+            document.getElementById('addAtt2').addEventListener('click', function() { window.addTableRow('attachment2Table', 'att2'); });
+            document.getElementById('addAtt3').addEventListener('click', function() { window.addTableRow('attachment3Table', 'att3'); });
+            document.getElementById('addAtt4').addEventListener('click', function() { window.addTableRow('attachment4Table', 'att4'); });
+            document.getElementById('addAtt5').addEventListener('click', function() { window.addTableRow('attachment5Table', 'att5'); });
+            
             const tableConfigs = [
                 { id: 'attachment1Table' },
                 { id: 'attachment2Table' },
@@ -643,20 +513,14 @@
             ];
             tableConfigs.forEach(config => {
                 const delBtn = document.querySelector(`#${config.id} .del-btn`);
-                if (delBtn) {
-                    delBtn.addEventListener('click', function() {
-                        window.delTableRow(config.id, this);
-                    });
-                }
+                if (delBtn) delBtn.addEventListener('click', function() { window.delTableRow(config.id, this); });
             });
-            // 提交/重置按钮
+
             document.getElementById('resetBtn').addEventListener('click', window.resetMonthlyForm);
             document.getElementById('submitBtn').addEventListener('click', submitMonthlyForm);
-
-            console.log('【日志】月报页初始化完成，所有事件绑定成功');
         });
 
-        // ================ 表单提交函数 ================
+        // ========== 提交函数 ==========
         async function submitMonthlyForm() {
             if (window.isProcessing) return;
             window.isProcessing = true;
@@ -664,15 +528,10 @@
             submitBtn.disabled = true;
 
             try {
-                // 1. 表单基础验证
                 const form = document.getElementById('monthlyForm');
-                if (!form.checkValidity()) {
-                    alert('请填写所有必填项！');
-                    form.reportValidity();
-                    return;
-                }
+                if (!form.checkValidity()) { alert('请填写所有必填项！'); form.reportValidity(); return; }
 
-                // 2. 收集主表数据
+                // 1. 主表数据
                 const mainData = {
                     user_id: window.currentUser.id,
                     project_name: window.currentUser.project_name,
@@ -715,7 +574,6 @@
                     created_at: new Date().toISOString()
                 };
 
-                // 3. 插入主表数据
                 const { data: mainRes, error: mainErr } = await window.supabaseClient
                     .from('safety_monthly_main')
                     .insert([mainData])
@@ -724,7 +582,7 @@
                 if (mainErr) throw mainErr;
                 const mainId = mainRes.id;
 
-                // 4. 收集并插入附表1数据
+                // 2. 附表1
                 const att1Data = [];
                 Array.from(document.querySelectorAll('#attachment1Table tbody tr')).forEach(tr => {
                     const inputs = tr.querySelectorAll('.att1');
@@ -747,7 +605,7 @@
                     if (att1Err) throw att1Err;
                 }
 
-                // 5. 收集并插入附表2数据
+                // 3. 附表2
                 const att2Data = [];
                 Array.from(document.querySelectorAll('#attachment2Table tbody tr')).forEach(tr => {
                     const inputs = tr.querySelectorAll('.att2');
@@ -782,7 +640,7 @@
                     if (att2Err) throw att2Err;
                 }
 
-                // 6. 收集并插入附表3数据
+                // 4. 附表3
                 const att3Data = [];
                 Array.from(document.querySelectorAll('#attachment3Table tbody tr')).forEach(tr => {
                     const inputs = tr.querySelectorAll('.att3');
@@ -812,7 +670,7 @@
                     if (att3Err) throw att3Err;
                 }
 
-                // 7. 收集并插入附表4数据
+                // 5. 附表4
                 const att4Data = [];
                 Array.from(document.querySelectorAll('#attachment4Table tbody tr')).forEach(tr => {
                     const inputs = tr.querySelectorAll('.att4');
@@ -840,7 +698,7 @@
                     if (att4Err) throw att4Err;
                 }
 
-                // 8. 收集并插入附表5数据（文件需单独上传到Storage，此处仅记录基础信息）
+                // 6. 附表5
                 const att5Data = [];
                 Array.from(document.querySelectorAll('#attachment5Table tbody tr')).forEach(tr => {
                     const inputs = tr.querySelectorAll('.att5');
@@ -864,8 +722,8 @@
                 window.resetMonthlyForm();
 
             } catch (error) {
-                console.error('【错误】月报提交失败：', error);
-                alert('月报提交失败：' + (error.message || '未知错误，请联系管理员'));
+                console.error('提交失败：', error);
+                alert('提交失败：' + (error.message || '未知错误'));
             } finally {
                 window.isProcessing = false;
                 submitBtn.disabled = false;
