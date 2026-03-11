@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>安全环境管理月报 - 完整版</title>
+    <title>安全环境管理月报</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
     <style>
@@ -70,7 +70,7 @@
 <body>
     <div class="container" style="background:transparent; box-shadow:none; padding:0; max-width:1260px;">
         <div class="header">
-            <h1>安全环境管理月报表 (完整版)</h1>
+            <h1>安全环境管理月报表 </h1>
             <div class="user-info">
                 <span>当前项目：<span id="currentProject">--</span></span>
                 <button class="btn-nav" onclick="location.href='my_history.html'">我的历史</button>
@@ -79,81 +79,337 @@
             </div>
         </div>
 
-        <div style="background:#fff; padding:30px; border-radius:8px;">
-            <form id="monthlyForm">
-                <div class="section-title">一、报表基础信息</div>
-                <div class="form-row">
-                    <div class="form-group"><label>项目名称</label><input type="text" id="m_projectName" readonly></div>
-                    <div class="form-group"><label>所属部门</label><input type="text" id="m_department" placeholder="请输入部门" required></div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group"><label>报告月份</label><input type="month" id="m_reportMonth" required></div>
-                    <div class="form-group"><label>填报人</label><input type="text" id="m_reporter" placeholder="请输入姓名" required></div>
-                    <div class="form-group"><label>填报日期</label><input type="date" id="m_reportDate" required></div>
-                </div>
+    <div class="container">
+        <form id="monthlyForm">
+            <div class="section-title">一、本月安全生产及环保工作情况概述</div>
+            <div class="form-row">
+                <div class="form-group"><label>项目名称</label><input type="text" id="projectName" readonly></div>
+                <div class="form-group"><label>部门</label><input type="text" id="department" placeholder="请填写所属部门" required></div>
+                <div class="form-group"><label>填报月份</label><input type="month" id="reportMonth" required></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label>填报人</label><input type="text" id="reporter" required placeholder="请填写填报人姓名"></div>
+                <div class="form-group"><label>填报日期</label><input type="date" id="reportDate" required></div>
+            </div>
+            <div class="form-group">
+                <label>本月安全生产及环保工作情况概述</label>
+                <textarea id="workOverview" placeholder="请概述本月工作情况、成效、问题等" required></textarea>
+            </div>
 
-                <div class="section-title">二、本月安全管理概况</div>
-                <div class="form-group">
-                    <label>本月安全工作概述</label>
-                    <textarea id="m_workOverview" placeholder="请详细描述本月主要安全工作内容..."></textarea>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group"><label>公司在册人数</label><input type="number" id="m_companyStaffNum" min="0" value="0"></div>
-                    <div class="form-group"><label>承包商管理人员数</label><input type="number" id="m_contractorManageNum" min="0" value="0"></div>
-                    <div class="form-group"><label>承包商作业人数</label><input type="number" id="m_contractorWorkerNum" min="0" value="0"></div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group"><label>专职安全管理人员数</label><input type="number" id="m_fullTimeSafetyNum" min="0" value="0"></div>
-                    <div class="form-group"><label>兼职安全管理人员数</label><input type="number" id="m_partTimeSafetyNum" min="0" value="0"></div>
-                </div>
+            <div class="section-title">二、安全生产数据统计</div>
+            <div class="form-row">
+                <div class="form-group"><label>公司项目部人员数量</label><input type="number" id="companyStaffNum" min="0" value="0" required></div>
+                <div class="form-group"><label>承包商管理人员数量</label><input type="number" id="contractorManageNum" min="0" value="0" required></div>
+                <div class="form-group"><label>承包商施工人员数量</label><input type="number" id="contractorWorkerNum" min="0" value="0" required></div>
+                <div class="form-group"><label>专职安全管理人员数量</label><input type="number" id="fullTimeSafetyNum" min="0" value="0" required></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label>兼职安全管理人员数量</label><input type="number" id="partTimeSafetyNum" min="0" value="0" required></div>
+                <div class="form-group"><label>重大危险源数量</label><input type="number" id="majorHazardCount" min="0" value="0" required></div>
+                <div class="form-group"><label>重要危险源数量</label><input type="number" id="importantHazardCount" min="0" value="0" required></div>
+                <div class="form-group"><label>安全生产奖励人数</label><input type="number" id="rewardPersonNum" min="0" value="0" required></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label>安全生产奖励金额（万元）</label><input type="number" id="rewardAmount" min="0" step="0.01" value="0" required></div>
+                <div class="form-group"><label>安全生产处罚人数</label><input type="number" id="punishPersonNum" min="0" value="0" required></div>
+                <div class="form-group"><label>安全生产处罚金额（万元）</label><input type="number" id="punishAmount" min="0" step="0.01" value="0" required></div>
+                <div class="form-group"><label>安全生产培训次数</label><input type="number" id="trainingCount" min="0" value="0" required></div>
+            </div>
+            <div class="form-group">
+                <label>安全生产培训内容、形式、日期</label>
+                <textarea id="trainingContent" placeholder="例：2026-03-10 消防安全培训（线下）" required></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label>培训覆盖人数</label><input type="number" id="trainingCoverNum" min="0" value="0" required></div>
+                <div class="form-group"><label>安全应急演练次数</label><input type="number" id="drillCount" min="0" value="0" required></div>
+                <div class="form-group"><label>应急演练覆盖人数</label><input type="number" id="drillCoverNum" min="0" value="0" required></div>
+                <div class="form-group"><label>承包商安全处罚次数</label><input type="number" id="contractorPunishCount" min="0" value="0" required></div>
+            </div>
+            <div class="form-group">
+                <label>应急演练内容、形式、日期</label>
+                <textarea id="drillContent" placeholder="例：2026-03-15 触电应急演练（现场实操）" required></textarea>
+            </div>
+            <div class="form-group">
+                <label>承包商安全处罚金额（万元）</label>
+                <input type="number" id="contractorPunishAmount" min="0" step="0.01" value="0" required>
+            </div>
 
-                <div class="form-row">
-                    <div class="form-group"><label>重大危险源数</label><input type="number" id="m_majorHazardCount" min="0" value="0"></div>
-                    <div class="form-group"><label>重要危险源数</label><input type="number" id="m_importantHazardCount" min="0" value="0"></div>
-                </div>
+            <div class="section-title">三、事故情况</div>
+            <div class="form-row">
+                <div class="form-group"><label>未遂事件起数</label><input type="number" id="nearMissCount" min="0" value="0" required></div>
+                <div class="form-group"><label>轻伤事故起数</label><input type="number" id="lightInjuryCount" min="0" value="0" required></div>
+                <div class="form-group"><label>轻伤事故人数</label><input type="number" id="lightInjuryPerson" min="0" value="0" required></div>
+                <div class="form-group"><label>重伤事故起数</label><input type="number" id="severeInjuryCount" min="0" value="0" required></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label>重伤事故人数</label><input type="number" id="severeInjuryPerson" min="0" value="0" required></div>
+                <div class="form-group"><label>工亡事故起数</label><input type="number" id="deathCount" min="0" value="0" required></div>
+                <div class="form-group"><label>工亡事故人数</label><input type="number" id="deathPerson" min="0" value="0" required></div>
+                <div class="form-group"><label>安全生产费用投入（万元）</label><input type="number" id="safetyInputAmount" min="0" step="0.01" value="0" required></div>
+            </div>
+            <div class="form-group">
+                <label>安全责任书签订数量</label>
+                <input type="number" id="contractSignedCount" min="0" value="0" required>
+            </div>
 
-                <div class="form-row">
-                    <div class="form-group"><label>培训次数</label><input type="number" id="m_trainingCount" min="0" value="0"></div>
-                    <div class="form-group" style="flex:2;"><label>培训主要内容</label><input type="text" id="m_trainingContent" placeholder="简述培训内容"></div>
-                    <div class="form-group"><label>培训覆盖人数</label><input type="number" id="m_trainingCoverNum" min="0" value="0"></div>
-                </div>
+            <div class="section-title">四、突出贡献情况</div>
+            <div class="form-group">
+                <label>安全环保管理创新、科技兴安突出成果</label>
+                <textarea id="innovation" placeholder="请填写创新成果、技术应用等" required></textarea>
+            </div>
+            <div class="form-group">
+                <label>应急处置、抢险救灾贡献情况</label>
+                <textarea id="emergencyContribution" placeholder="请填写应急处置案例、贡献等" required></textarea>
+            </div>
 
-                <div class="form-row">
-                    <div class="form-group"><label>应急演练次数</label><input type="number" id="m_drillCount" min="0" value="0"></div>
-                    <div class="form-group" style="flex:2;"><label>演练主要内容</label><input type="text" id="m_drillContent" placeholder="简述演练内容"></div>
-                    <div class="form-group"><label>演练覆盖人数</label><input type="number" id="m_drillCoverNum" min="0" value="0"></div>
-                </div>
+            <div class="section-title">五、本月主要存在的安全问题</div>
+            <div class="form-group">
+                <textarea id="safetyProblem" placeholder="请填写本月存在的安全隐患、管理问题等" required></textarea>
+            </div>
 
-                <div class="section-title">附表1：重大、重要危险源清单</div>
-                <div class="table-box">
-                    <table id="table1">
-                        <thead>
-                            <tr>
-                                <th style="width:50px;">序号</th>
-                                <th>单位</th>
-                                <th>危险源类别</th>
-                                <th>位置</th>
-                                <th>危险因素</th>
-                                <th>预防控制措施</th>
-                                <th>整改期限</th>
-                                <th>责任人</th>
-                                <th style="width:80px;">操作</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-                <div class="table-actions">
-                    <button type="button" class="add-row-btn" onclick="addRow('table1')">+ 新增危险源</button>
-                </div>
+            <div class="section-title">附表1：重大、重要危险源清单</div>
+            <div class="table-box">
+                <table id="attachment1Table">
+                    <thead>
+                        <tr>
+                            <th>序号</th><th>单位</th><th>危险源类别</th><th>分布场所/作业活动</th>
+                            <th>主要危险因素</th><th>可能导致的事故类型</th><th>主要防范措施</th>
+                            <th>完成整改时间</th><th>责任人</th><th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><input type="text" class="att1" placeholder="填写单位" required></td>
+                            <td>
+                                <select class="att1" required>
+                                    <option value="">请选择</option>
+                                    <option value="第一类危险源">第一类危险源</option>
+                                    <option value="第二类危险源">第二类危险源</option>
+                                </select>
+                            </td>
+                            <td><input type="text" class="att1" placeholder="填写场所" required></td>
+                            <td><input type="text" class="att1" placeholder="填写因素" required></td>
+                            <td>
+                                <select class="att1" required>
+                                    <option value="">请选择</option>
+                                    <option value="车辆伤害">车辆伤害</option><option value="物体打击">物体打击</option><option value="起重伤害">起重伤害</option>
+                                    <option value="淹溺">淹溺</option><option value="灼烫">灼烫</option><option value="火灾">火灾</option><option value="高处坠落">高处坠落</option>
+                                    <option value="坍塌">坍塌</option><option value="冒顶片帮">冒顶片帮</option><option value="透水">透水</option><option value="放炮">放炮</option>
+                                    <option value="火药爆炸">火药爆炸</option><option value="瓦斯爆炸">瓦斯爆炸</option><option value="锅炉爆炸">锅炉爆炸</option><option value="容器爆炸">容器爆炸</option>
+                                    <option value="其它爆炸">其它爆炸</option><option value="中毒和窒息">中毒和窒息</option><option value="其它伤害">其它伤害</option>
+                                    <option value="粉尘">粉尘</option><option value="噪音">噪音</option><option value="辐射">辐射</option>
+                                </select>
+                            </td>
+                            <td><input type="text" class="att1" placeholder="填写措施" required></td>
+                            <td><input type="date" class="att1" required></td>
+                            <td><input type="text" class="att1" placeholder="填写姓名" required></td>
+                            <td><button type="button" class="del-btn">删除</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-btn"><button type="button" class="add-btn" id="addAtt1">新增一行</button></div>
 
-                <div class="submit-area">
-                    <button type="button" class="submit-btn" id="submitBtn" onclick="submitMonthlyForm()">提交月报数据</button>
-                    <button type="button" class="reset-btn" onclick="resetMonthlyForm()">清空表单</button>
-                </div>
-            </form>
-        </div>
+            <div class="section-title">附表2：安全生产隐患排查治理信息统计表</div>
+            <div class="table-box">
+                <table id="attachment2Table">
+                    <thead>
+                        <tr>
+                            <th>序号</th><th>所属单位</th><th>排查项目部名称</th><th>排查负责人</th>
+                            <th>参与排查人员</th><th>排查方式</th><th>排查时间</th><th>隐患描述</th>
+                            <th>隐患产生原因</th><th>隐患类别</th><th>隐患等级</th><th>隐患整治责任单位</th>
+                            <th>治理责任人</th><th>治理期限</th><th>治理费用（万元）</th><th>治理描述</th>
+                            <th>隐患是否消除</th><th>验证人</th><th>验证时间</th><th>公示方式</th><th>公示时间</th><th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><input type="text" class="att2" placeholder="填写单位" required></td>
+                            <td><input type="text" class="att2" placeholder="填写项目部" required></td>
+                            <td><input type="text" class="att2" placeholder="填写姓名" required></td>
+                            <td><input type="text" class="att2" placeholder="填写人员" required></td>
+                            <td>
+                                <select class="att2" required>
+                                    <option value="">请选择</option>
+                                    <option value="日常检查">日常检查</option><option value="专项检查">专项检查</option>
+                                    <option value="联合检查">联合检查</option><option value="季节性检查">季节性检查</option>
+                                </select>
+                            </td>
+                            <td><input type="date" class="att2" required></td>
+                            <td><input type="text" class="att2" placeholder="填写描述" required></td>
+                            <td><input type="text" class="att2" placeholder="填写原因" required></td>
+                            <td>
+                                <select class="att2" required>
+                                    <option value="">请选择</option>
+                                    <option value="管理隐患">管理隐患</option><option value="车辆伤害">车辆伤害</option><option value="物体打击">物体打击</option>
+                                    <option value="起重伤害">起重伤害</option><option value="淹溺">淹溺</option><option value="灼烫">灼烫</option><option value="火灾">火灾</option>
+                                    <option value="高处坠落">高处坠落</option><option value="坍塌">坍塌</option><option value="冒顶片帮">冒顶片帮</option><option value="透水">透水</option>
+                                    <option value="放炮">放炮</option><option value="火药爆炸">火药爆炸</option><option value="瓦斯爆炸">瓦斯爆炸</option><option value="锅炉爆炸">锅炉爆炸</option>
+                                    <option value="容器爆炸">容器爆炸</option><option value="其它爆炸">其它爆炸</option><option value="中毒和窒息">中毒和窒息</option><option value="其它伤害">其它伤害</option>
+                                    <option value="粉尘">粉尘</option><option value="噪音">噪音</option><option value="辐射">辐射</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select class="att2" required>
+                                    <option value="">请选择</option>
+                                    <option value="一般隐患">一般隐患</option>
+                                    <option value="重大隐患">重大隐患</option>
+                                </select>
+                            </td>
+                            <td><input type="text" class="att2" placeholder="填写单位" required></td>
+                            <td><input type="text" class="att2" placeholder="填写姓名" required></td>
+                            <td><input type="date" class="att2" required></td>
+                            <td><input type="number" class="att2" min="0" step="0.01" value="0" required></td>
+                            <td><input type="text" class="att2" placeholder="填写描述" required></td>
+                            <td>
+                                <select class="att2" required>
+                                    <option value="false">否</option>
+                                    <option value="true">是</option>
+                                </select>
+                            </td>
+                            <td><input type="text" class="att2" placeholder="填写姓名" required></td>
+                            <td><input type="date" class="att2" required></td>
+                            <td><input type="text" class="att2" placeholder="填写方式" required></td>
+                            <td><input type="date" class="att2" required></td>
+                            <td><button type="button" class="del-btn">删除</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-btn"><button type="button" class="add-btn" id="addAtt2">新增一行</button></div>
+
+            <div class="section-title">附表3：相关方安全信息统计表</div>
+            <div class="table-box">
+                <table id="attachment3Table">
+                    <thead>
+                        <tr>
+                            <th>序号</th><th>相关方名称</th><th>分包合同金额（万元）</th><th>安全生产许可证有效期</th>
+                            <th>分包商总人数</th><th>专职安全员人数</th><th>分包商负责人</th><th>负责人是否持有安全证</th>
+                            <th>分包商技术负责人</th><th>技术负责人是否持有安全证</th><th>分包商安全负责人</th><th>安全负责人是否持有安全证</th>
+                            <th>批准人</th><th>审核人</th><th>填报人</th><th>填报日期</th><th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><input type="text" class="att3" placeholder="填写名称" required></td>
+                            <td><input type="number" class="att3" min="0" step="0.01" value="0" required></td>
+                            <td><input type="date" class="att3" required></td>
+                            <td><input type="number" class="att3" min="0" value="0" required></td>
+                            <td><input type="number" class="att3" min="0" value="0" required></td>
+                            <td><input type="text" class="att3" placeholder="填写姓名" required></td>
+                            <td>
+                                <select class="att3" required>
+                                    <option value="false">否</option>
+                                    <option value="true">是</option>
+                                </select>
+                            </td>
+                            <td><input type="text" class="att3" placeholder="填写姓名" required></td>
+                            <td>
+                                <select class="att3" required>
+                                    <option value="false">否</option>
+                                    <option value="true">是</option>
+                                </select>
+                            </td>
+                            <td><input type="text" class="att3" placeholder="填写姓名" required></td>
+                            <td>
+                                <select class="att3" required>
+                                    <option value="false">否</option>
+                                    <option value="true">是</option>
+                                </select>
+                            </td>
+                            <td><input type="text" class="att3" placeholder="填写姓名" required></td>
+                            <td><input type="text" class="att3" placeholder="填写姓名" required></td>
+                            <td><input type="text" class="att3" placeholder="填写姓名" required></td>
+                            <td><input type="date" class="att3" required></td>
+                            <td><button type="button" class="del-btn">删除</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-btn"><button type="button" class="add-btn" id="addAtt3">新增一行</button></div>
+
+            <div class="section-title">附表4：项目安全风险管控清单</div>
+            <div class="table-box">
+                <table id="attachment4Table">
+                    <thead>
+                        <tr>
+                            <th>序号</th><th>所属单位</th><th>工程部位</th><th>作业内容/工序</th>
+                            <th>简要情况描述</th><th>风险类型</th><th>风险等级</th><th>预计存在时间</th>
+                            <th>是否直接判定</th><th>判定标准/依据</th><th>关键管控措施</th><th>管控单位</th>
+                            <th>管控责任人</th><th>监督责任人</th><th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><input type="text" class="att4" placeholder="填写单位" required></td>
+                            <td><input type="text" class="att4" placeholder="填写部位" required></td>
+                            <td><input type="text" class="att4" placeholder="填写内容" required></td>
+                            <td><input type="text" class="att4" placeholder="填写描述" required></td>
+                            <td>
+                                <select class="att4" required>
+                                    <option value="">请选择</option>
+                                    <option value="设备风险">设备风险</option><option value="作业风险">作业风险</option>
+                                    <option value="环境风险">环境风险</option><option value="管理风险">管理风险</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select class="att4" required>
+                                    <option value="">请选择</option>
+                                    <option value="低风险">低风险</option>
+                                    <option value="一般风险">一般风险</option>
+                                    <option value="较大风险">较大风险</option>
+                                    <option value="重大风险">重大风险</option>
+                                </select>
+                            </td>
+                            <td><input type="text" class="att4" placeholder="填写时间" required></td>
+                            <td>
+                                <select class="att4" required>
+                                    <option value="false">否</option>
+                                    <option value="true">是</option>
+                                </select>
+                            </td>
+                            <td><input type="text" class="att4" placeholder="填写依据" required></td>
+                            <td><input type="text" class="att4" placeholder="填写措施" required></td>
+                            <td><input type="text" class="att4" placeholder="填写单位" required></td>
+                            <td><input type="text" class="att4" placeholder="填写姓名" required></td>
+                            <td><input type="text" class="att4" placeholder="填写姓名" required></td>
+                            <td><button type="button" class="del-btn">删除</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-btn"><button type="button" class="add-btn" id="addAtt4">新增一行</button></div>
+
+            <div class="section-title">附表5：安全管理工作照片/附件</div>
+            <div class="table-box">
+                <table id="attachment5Table">
+                    <thead>
+                        <tr>
+                            <th>序号</th><th>附件/照片名称</th><th>附件/照片上传</th><th>上传日期</th><th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><input type="text" class="att5" placeholder="填写名称" required></td>
+                            <td><input type="file" class="att5-file" accept="image/*,.pdf,.doc,.docx" required></td>
+                            <td><input type="date" class="att5" required></td>
+                            <td><button type="button" class="del-btn">删除</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-btn"><button type="button" class="add-btn" id="addAtt5">新增一行</button></div>
+
+            <div class="submit-area">
+                <button type="button" class="submit-btn" id="submitBtn">提交月报数据</button>
+                <button type="button" class="reset-btn" id="resetBtn">清空表单</button>
+            </div>
+        </form>
     </div>
 
     <script>
