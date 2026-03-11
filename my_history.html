@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>我的历史记录</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <style>
+        body { font-family: "Microsoft YaHei", sans-serif; padding: 20px; background: #f5f7fa; margin: 0; }
+        .header { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; max-width: 1000px; margin: 0 auto 20px; }
+        h2 { margin: 0; color: #003366; font-size: 20px; }
+        .nav-btn { padding: 8px 15px; background: #fff; border: 1px solid #ddd; color: #333; border-radius: 4px; cursor: pointer; text-decoration: none; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab { padding: 10px 20px; background: #fff; border: 1px solid #e8e8e8; border-radius: 6px; cursor: pointer; }
+        .tab.active { background: #0066cc; color: #fff; border-color: #0066cc; }
+        .panel { background: #fff; padding: 20px; border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #eee; padding: 12px; text-align: left; font-size: 14px; }
+        th { background: #f8f9fa; }
+        .view-btn { color: #0066cc; cursor: pointer; text-decoration: underline; }
+        .empty { text-align: center; color: #999; padding: 40px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>📂 我的历史提交记录</h2>
+        <button class="nav-btn" onclick="location.href='select.html'">返回首页</button>
+    </div>
+
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" id="t1" onclick="switchTab('weekly')">周报记录</div>
+            <div class="tab" id="t2" onclick="switchTab('monthly')">月报记录</div>
+        </div>
+
+        <div class="panel">
+            <div id="list-weekly">
+                <table><thead><tr><th>项目</th><th>周期</th><th>填报日期</th><th>操作</th></tr></thead><tbody id="tb-weekly"></tbody></table>
+            </div>
+            <div id="list-monthly" style="display:none">
+                <table><thead><tr><th>项目</th><th>月份</th><th>填报日期</th><th>操作</th></tr></thead><tbody id="tb-monthly"></tbody></table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const supabase = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+        const user = JSON.parse(localStorage.getItem('user'));
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if(!user) location.href='index.html';
+            loadWeekly();
+        });
+
+        function switchTab(tab) {
+            document.getElementById('t1').className = tab === 'weekly' ? 'tab active' : 'tab';
+            document.getElementById('t2').className = tab === 'monthly' ? 'tab active' : 'tab';
+            document.getElementById('list-weekly').style.display = tab === 'weekly' ? 'block' : 'none';
+            document.getElementById('list-monthly').style.display = tab === 'monthly' ? 'block' : 'none';
+            if(tab === 'weekly') loadWeekly(); else loadMonthly();
+        }
+
+        async function loadWeekly() {
+            const tb = document.getElementById('tb-weekly');
+            tb.innerHTML = '<tr><td colspan="4" class="empty">加载中...</td></tr>';
+            const { data } = await supabase.from('safety_weekly_report').select('*').eq('user_id', user.id).order('created_at', {ascending:false});
+            tb.innerHTML = '';
+            if(!data || data.length === 0) { tb.innerHTML = '<tr><td colspan="4" class="empty">暂无记录</td></tr>'; return; }
+            data.forEach(r => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${r.project_name}</td><td>${r.report_week}</td><td>${r.report_date || '-'}</td><td><span class="view-btn" onclick="location.href='detail_weekly.html?id=${r.id}'">查看详情</span></td>`;
+                tb.appendChild(tr);
+            });
+        }
+
+        async function loadMonthly() {
+            const tb = document.getElementById('tb-monthly');
+            tb.innerHTML = '<tr><td colspan="4" class="empty">加载中...</td></tr>';
+            const { data } = await supabase.from('safety_monthly_main').select('*').eq('user_id', user.id).order('created_at', {ascending:false});
+            tb.innerHTML = '';
+            if(!data || data.length === 0) { tb.innerHTML = '<tr><td colspan="4" class="empty">暂无记录</td></tr>'; return; }
+            data.forEach(r => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${r.project_name}</td><td>${r.report_month}</td><td>${r.report_date || '-'}</td><td><span class="view-btn" onclick="location.href='detail_monthly.html?id=${r.id}'">查看详情</span></td>`;
+                tb.appendChild(tr);
+            });
+        }
+    </script>
+</body>
+</html>
