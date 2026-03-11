@@ -5,11 +5,12 @@
     <title>东方电气安全管理指挥中心 - Pro</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/map/js/china.js"></script>
     <script src="config.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-            background: #030d28 url('data:image/svg+xml;utf8,<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%23004a8f" opacity="0.3"/><circle cx="75" cy="75" r="1" fill="%23004a8f" opacity="0.3"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grain)"/></svg>');
+            background: #030d28;
             color: #fff; 
             font-family: "Microsoft YaHei", sans-serif; 
             height: 100vh; 
@@ -17,8 +18,6 @@
             display: flex;
             flex-direction: column;
         }
-
-        /* 顶部标题栏 */
         .header { 
             height: 90px; 
             position: relative;
@@ -29,7 +28,7 @@
         .header-bg {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: url('data:image/svg+xml;utf8,<svg width="100%" height="90" xmlns="http://www.w3.org/2000/svg"><path d="M0,0 L40%%,0 L42%%,30 L58%%,30 L60%%,0 L100%%,0 L100%%,90 L0,90 Z" fill="%23001a4a" opacity="0.9"/><path d="M0,30 L40%%,30 L42%%,0 L58%%,0 L60%%,30 L100%%,30" stroke="%2300d4ff" stroke-width="2" fill="none"/></svg>') no-repeat center top;
+            background: url('data:image/svg+xml;utf8,<svg width="100%" height="90" xmlns="http://www.w3.org/2000/svg"><path d="M0,0 L40%%,0 L42%%,30 L58%%,30 L60%%,0 L100%%,0 L100%%,90 L0,90 Z" fill="%23001a4a" opacity="0.9"/></svg>') no-repeat center top;
             background-size: 100% 90px;
             z-index: -1;
         }
@@ -52,11 +51,7 @@
             color: #00d4ff; 
             cursor: pointer; 
             border-radius: 4px;
-            transition: all 0.3s;
         }
-        .exit-btn:hover { background: rgba(0,212,255,0.3); }
-
-        /* 主体布局 */
         .container { 
             display: grid; 
             grid-template-columns: 380px 1fr 380px; 
@@ -64,8 +59,6 @@
             padding: 0 20px 20px 20px; 
             height: calc(100vh - 100px); 
         }
-
-        /* 通用面板样式 */
         .panel { 
             background: rgba(0, 30, 80, 0.35); 
             border: 1px solid #004a8f; 
@@ -75,13 +68,14 @@
             display: flex;
             flex-direction: column;
         }
-        /* 四角装饰 */
-        .panel::before, .panel::after, 
-        .panel-corner::before, .panel-corner::after {
-            content: ''; position: absolute; width: 12px; height: 12px; border: 2px solid #00d4ff; transition: all 0.3s;
+        .panel::before, .panel::after {
+            content: ''; position: absolute; width: 12px; height: 12px; border: 2px solid #00d4ff;
         }
         .panel::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
         .panel::after { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
+        .panel-corner::before, .panel-corner::after {
+            content: ''; position: absolute; width: 12px; height: 12px; border: 2px solid #00d4ff;
+        }
         .panel-corner::before { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; }
         .panel-corner::after { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
         
@@ -95,9 +89,9 @@
             background: linear-gradient(90deg, rgba(0,212,255,0.15), transparent);
             line-height: 28px;
         }
-
-        /* 左侧栏 */
         .col-left { display: flex; flex-direction: column; gap: 20px; }
+        .col-center { display: flex; flex-direction: column; gap: 20px; }
+        .col-right { display: flex; flex-direction: column; gap: 20px; }
         .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .kpi-card { 
             background: rgba(0, 100, 200, 0.15); 
@@ -108,30 +102,10 @@
         }
         .kpi-value { font-size: 26px; font-weight: bold; font-family: 'Courier New', monospace; }
         .kpi-label { font-size: 12px; color: #a0c4e8; margin-top: 5px; }
-        .c1 { color: #00d4ff; }
-        .c2 { color: #ffd700; }
-        .c3 { color: #52c41a; }
-        .c4 { color: #ff6b6b; }
-
-        /* 中间栏 */
-        .col-center { display: flex; flex-direction: column; gap: 20px; }
+        .c1 { color: #00d4ff; } .c2 { color: #ffd700; } .c3 { color: #52c41a; } .c4 { color: #ff6b6b; }
         .map-box { flex: 2; min-height: 0; }
         .trend-box { flex: 1; min-height: 0; }
-
-        /* 右侧栏 */
-        .col-right { display: flex; flex-direction: column; gap: 20px; }
-        .rank-list { list-style: none; padding: 0; }
-        .rank-item { 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 10px 0; border-bottom: 1px dashed rgba(0,212,255,0.2);
-        }
-        .rank-name { color: #fff; font-size: 14px; }
-        .rank-val { color: #ffd700; font-weight: bold; }
-        .progress-bar { width: 100px; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin-left: 10px; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #00d4ff, #0066cc); width: 0%; transition: width 1s; }
-
         .chart-small { flex: 1; width: 100%; min-height: 200px; }
-
     </style>
 </head>
 <body>
@@ -146,44 +120,20 @@
     </div>
 
     <div class="container">
-        <!-- 左侧：关键指标 + 隐患分析 -->
         <div class="col-left">
             <div class="panel" style="flex: 1;">
                 <div class="panel-corner"></div>
                 <div class="panel-title">📊 安全关键指标</div>
                 <div class="kpi-grid">
-                    <div class="kpi-card">
-                        <div class="kpi-value c1" id="kpiProject">0</div>
-                        <div class="kpi-label">活跃项目数</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-value c2" id="kpiHidden">0</div>
-                        <div class="kpi-label">累计发现隐患</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-value c3" id="kpiRect">0</div>
-                        <div class="kpi-label">已整改完成</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-value c4" id="kpiRate">0%</div>
-                        <div class="kpi-label">整改率</div>
-                    </div>
+                    <div class="kpi-card"><div class="kpi-value c1" id="kpiProject">0</div><div class="kpi-label">活跃项目数</div></div>
+                    <div class="kpi-card"><div class="kpi-value c2" id="kpiHidden">0</div><div class="kpi-label">累计发现隐患</div></div>
+                    <div class="kpi-card"><div class="kpi-value c3" id="kpiRect">0</div><div class="kpi-label">已整改完成</div></div>
+                    <div class="kpi-card"><div class="kpi-value c4" id="kpiRate">0%</div><div class="kpi-label">整改率</div></div>
                 </div>
-                <div style="margin-top: 15px; flex: 1; min-height: 180px;">
-                    <div id="chartPie" style="width: 100%; height: 100%;"></div>
-                </div>
-            </div>
-
-            <div class="panel" style="flex: 1;">
-                <div class="panel-corner"></div>
-                <div class="panel-title">⚠️ 项目隐患排名</div>
-                <ul class="rank-list" id="rankList">
-                    <!-- JS 生成 -->
-                </ul>
+                <div style="margin-top: 15px; flex: 1; min-height: 180px;"><div id="chartPie" style="width: 100%; height: 100%;"></div></div>
             </div>
         </div>
 
-        <!-- 中间：地图 + 趋势 -->
         <div class="col-center">
             <div class="panel map-box">
                 <div class="panel-corner"></div>
@@ -192,60 +142,43 @@
             </div>
             <div class="panel trend-box">
                 <div class="panel-corner"></div>
-                <div class="panel-title">📈 安全趋势双轴图 (隐患/培训)</div>
+                <div class="panel-title">📈 安全趋势图</div>
                 <div id="chartLine" style="width: 100%; height: 100%;"></div>
             </div>
         </div>
 
-        <!-- 右侧：类型占比 + 雷达图 + 消息 -->
         <div class="col-right">
             <div class="panel" style="flex: 1;">
                 <div class="panel-corner"></div>
-                <div class="panel-title">🎯 项目类型安全画像</div>
+                <div class="panel-title">🎯 项目类型画像</div>
                 <div id="chartRadar" class="chart-small"></div>
             </div>
-            
-            <div class="panel" style="flex: 1;">
-                <div class="panel-corner"></div>
-                <div class="panel-title">📋 本月月报数据概览</div>
-                <div id="chartBar" class="chart-small"></div>
-            </div>
-
             <div class="panel" style="height: 180px;">
                 <div class="panel-corner"></div>
-                <div class="panel-title">🔔 实时预警消息</div>
+                <div class="panel-title">🔔 系统消息</div>
                 <div id="msgList" style="font-size:13px; color:#ffcccb; line-height:2; overflow: hidden; height: 100px;">
-                    <p>⚠️ [系统] 正在连接实时数据库...</p>
+                    <p>ℹ️ 正在连接数据库...</p>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        const supabase = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
         const user = JSON.parse(localStorage.getItem('user'));
-
-        // 权限拦截
         if(!user || (user.role !== 'admin' && user.role !== 'manager')) {
             alert('您没有权限访问此页面');
             location.href='select.html';
         }
 
         let charts = {};
-        let globalData = {
-            weekly: [],
-            monthly: [],
-            hazards: []
-        };
+        window.projMap = {};
 
-        // 初始化时钟
         setInterval(() => {
             const now = new Date();
             document.getElementById('clock').innerText = now.toTimeString().split(' ')[0];
             document.getElementById('dateStr').innerText = now.getFullYear() + '年' + (now.getMonth()+1) + '月' + now.getDate() + '日';
         }, 1000);
 
-        // 数字滚动动画
         function animateValue(id, start, end, duration) {
             const obj = document.getElementById(id);
             if(!obj) return;
@@ -264,7 +197,7 @@
         window.addEventListener('DOMContentLoaded', async () => {
             initCharts();
             await loadAllData();
-            subscribeRealtime(); // 开启实时监听
+            subscribeRealtime();
         });
 
         function initCharts() {
@@ -272,252 +205,89 @@
             charts.map = echarts.init(document.getElementById('chartMap'));
             charts.line = echarts.init(document.getElementById('chartLine'));
             charts.radar = echarts.init(document.getElementById('chartRadar'));
-            charts.bar = echarts.init(document.getElementById('chartBar'));
-
-            window.onresize = () => {
-                Object.values(charts).forEach(c => c.resize());
-            };
+            window.onresize = () => { Object.values(charts).forEach(c => c.resize()); };
         }
 
-        // 核心数据加载函数
         async function loadAllData() {
             addMsg('ℹ️ 正在刷新数据...');
+            const { data: weeklyData } = await window.supabaseClient.from('safety_weekly_report').select('*');
+            const { data: projects } = await window.supabaseClient.from('projects').select('*');
             
-            // 1. 加载周报数据
-            const { data: weeklyData } = await supabase.from('safety_weekly_report').select('*');
-            // 2. 加载项目数据 (新增，用于地图)
-            const { data: projectsData } = await supabase.from('projects').select('*');
-            
-            if(weeklyData) globalData.weekly = weeklyData;
-            
-            // 必须先更新通用数据和 projMap，再渲染地图
-            updateDashboard(weeklyData || []);
-            
-            // 单独渲染地图
-            await renderMap();
-            
-            addMsg('✅ 数据同步完成');
-        }
-
-        function updateDashboard(weeklyData) {
-            // --- 1. 计算 KPI (保持原样，但要把 projMap 提升作用域) ---
-            // 注意：把 projMap 定义在这里，让 renderMap 也能访问到
-            window.projMap = {}; // 提升为全局变量
-            
+            window.projMap = {};
             let totalDanger = 0, totalRect = 0, projectCount = 0;
 
-            weeklyData.forEach(r => {
-                projectCount++;
-                const d = r.hidden_danger_found_count || 0;
-                const rect = r.hidden_danger_rectified_count || 0;
-                totalDanger += d;
-                totalRect += rect;
-                
-                if(!window.projMap[r.project_name]) window.projMap[r.project_name] = 0;
-                window.projMap[r.project_name] += d;
-            });
-           
+            if(weeklyData) {
+                weeklyData.forEach(r => {
+                    projectCount++;
+                    const d = r.hidden_danger_found_count || 0;
+                    const rect = r.hidden_danger_rectified_count || 0;
+                    totalDanger += d; totalRect += rect;
+                    if(!window.projMap[r.project_name]) window.projMap[r.project_name] = 0;
+                    window.projMap[r.project_name] += d;
+                });
+            }
+
             animateValue('kpiProject', 0, projectCount, 1000);
             animateValue('kpiHidden', 0, totalDanger, 1000);
             animateValue('kpiRect', 0, totalRect, 1000);
             const rate = totalDanger > 0 ? Math.round((totalRect/totalDanger)*100) : 100;
             animateValue('kpiRate', 0, rate, 1000);
 
-            // --- 2. 饼图 (隐患等级) ---
+            // 饼图
             charts.pie.setOption({
                 tooltip: { trigger: 'item' },
                 legend: { top: '0%', textStyle: { color: '#fff' } },
                 series: [{
-                    name: '隐患状态',
-                    type: 'pie',
-                    radius: ['45%', '70%'],
-                    center: ['50%', '60%'],
-                    itemStyle: { borderRadius: 8, borderColor: '#030d28', borderWidth: 3 },
-                    label: { show: true, color: '#fff', formatter: '{b}: {c}' },
+                    name: '隐患状态', type: 'pie', radius: ['45%', '70%'], center: ['50%', '60%'],
                     data: [
                         { value: totalRect, name: '已整改', itemStyle: { color: '#52c41a' } },
-                        { value: totalDanger - totalRect, name: '待整改', itemStyle: { color: '#faad14' } },
-                        { value: Math.min(5, totalDanger * 0.1), name: '重点关注', itemStyle: { color: '#ff6b6b' } }
+                        { value: totalDanger - totalRect, name: '待整改', itemStyle: { color: '#faad14' } }
                     ]
                 }]
             });
 
-            // --- 3. 排名列表 ---
-            const sortable = [];
-            for (let name in projMap) sortable.push([name, projMap[name]]);
-            sortable.sort((a, b) => b[1] - a[1]);
-            
-            const rankHtml = sortable.slice(0, 5).map((item, idx) => `
-                <li class="rank-item">
-                    <div style="display:flex; align-items:center; width:70%;">
-                        <span style="width:20px; color:${idx<3?'#ffd700':'#ccc'}">${idx+1}.</span>
-                        <span class="rank-name">${item[0]}</span>
-                    </div>
-                    <div style="display:flex; align-items:center;">
-                        <span class="rank-val">${item[1]}</span>
-                    </div>
-                </li>
-            `).join('');
-            document.getElementById('rankList').innerHTML = rankHtml || '<li class="rank-item"><span class="rank-name">暂无数据</span></li>';
+            // 地图
+            const mapData = (projects || []).map(p => ({
+                name: p.project_name,
+                value: [p.lng || 104.07, p.lat || 30.57, window.projMap[p.project_name] || 0]
+            }));
 
-// --- 4. 地图 (真实 Supabase 数据 + 中国地图) ---
-async function renderMap() {
-    // 1. 从数据库读取项目列表 (确保你的 projects 表有 lat, lng 字段)
-    const { data: projects } = await supabase.from('projects').select('*');
-    
-    if(!projects || projects.length === 0) {
-        charts.map.setOption({
-            title: { text: '暂无项目数据', left: 'center', top: 'center', textStyle: { color: '#666' } }
-        });
-        return;
-    }
-
-    // 2. 处理数据：将项目坐标与隐患数据结合
-    const mapData = projects.map(p => {
-        // 从之前统计好的 projMap 中查找该项目的隐患数，如果没有则为0
-        const dangerCount = projMap[p.project_name] || 0;
-        
-        return {
-            name: p.project_name,
-            value: [p.lng || 104.07, p.lat || 30.57, dangerCount], // [经度, 纬度, 数值]
-            itemStyle: {
-                color: dangerCount > 10 ? '#ff6b6b' : (dangerCount > 3 ? '#ffd700' : '#52c41a')
-            }
-        };
-    });
-
-    // 3. 渲染地图配置
-    charts.map.setOption({
-        backgroundColor: 'transparent',
-        tooltip: {
-            trigger: 'item',
-            formatter: function(params) {
-                if(params.seriesType === 'map') return; // 不显示地图本身的 tooltip
-                return `
-                    <div style="font-weight:bold; font-size:14px; margin-bottom:5px;">${params.name}</div>
-                    <div>隐患总数：<span style="color:#ffd700; font-weight:bold">${params.value[2]}</span></div>
-                `;
-            }
-        },
-        visualMap: {
-            show: true,
-            min: 0,
-            max: 20,
-            left: 'left',
-            bottom: '20px',
-            text: ['高风险', '低风险'],
-            textStyle: { color: '#fff' },
-            inRange: {
-                color: ['#52c41a', '#ffd700', '#ff6b6b'] // 绿->黄->红
-            }
-        },
-        geo: {
-            map: 'china',
-            roam: true, // 允许缩放平移
-            zoom: 1.5, // 初始缩放级别，聚焦中国
-            center: [103.8, 31.2], // 中心点调整到四川附近
-            label: {
-                show: true,
-                color: 'rgba(255,255,255,0.5)'
-            },
-            itemStyle: {
-                areaColor: '#001a4a',
-                borderColor: '#00d4ff'
-            },
-            emphasis: {
-                itemStyle: {
-                    areaColor: '#003366'
+            charts.map.setOption({
+                backgroundColor: 'transparent',
+                tooltip: { trigger: 'item', formatter: '{b}<br/>隐患数: {c}' },
+                geo: {
+                    map: 'china', roam: true, zoom: 1.5, center: [103.8, 31.2],
+                    label: { show: true, color: 'rgba(255,255,255,0.5)' },
+                    itemStyle: { areaColor: '#001a4a', borderColor: '#00d4ff' },
+                    emphasis: { itemStyle: { areaColor: '#003366' } }
                 },
-                label: {
-                    color: '#fff'
-                }
-            }
-        },
-        series: [
-            {
-                name: '项目分布',
-                type: 'scatter',
-                coordinateSystem: 'geo',
-                data: mapData,
-                symbolSize: function (val) {
-                    // 动态大小：基础大小20，每有1个隐患增加3px
-                    return 20 + val[2] * 3;
-                },
-                encode: {
-                    value: 2
-                },
-                rippleEffect: {
-                    brushType: 'stroke'
-                },
-                label: {
-                    show: true,
-                    formatter: '{b}',
-                    position: 'right',
-                    color: '#fff',
-                    fontSize: 12
-                },
-                itemStyle: {
-                    shadowBlur: 10,
-                    shadowColor: '#333'
-                }
-            },
-            {
-                name: '涟漪效果',
-                type: 'effectScatter',
-                coordinateSystem: 'geo',
-                data: mapData.filter(item => item.value[2] > 5), // 只给隐患多的项目加特效
-                symbolSize: function (val) {
-                    return 10 + val[2] * 2;
-                },
-                showEffectOn: 'render',
-                rippleEffect: {
-                    brushType: 'stroke',
-                    scale: 4,
-                    period: 3
-                },
-                itemStyle: {
-                    color: '#ff6b6b',
-                    shadowBlur: 10,
-                    shadowColor: '#ff6b6b'
-                }
-            }
-        ]
-    });
-
-            // --- 5. 趋势双轴图 ---
-            charts.line.setOption({
-                tooltip: { trigger: 'axis' },
-                legend: { data: ['隐患数', '培训次数'], textStyle: { color: '#fff' }, bottom: 0 },
-                grid: { top: '10%', bottom: '20%', left: '10%', right: '10%' },
-                xAxis: {
-                    type: 'category',
-                    data: ['第1周', '第2周', '第3周', '第4周', '本周'],
-                    axisLine: { lineStyle: { color: '#00d4ff' } },
-                    axisLabel: { color: '#fff' }
-                },
-                yAxis: [
-                    { type: 'value', name: '隐患', splitLine: { lineStyle: { color: 'rgba(0,212,255,0.1)' } }, axisLabel: { color: '#fff' } },
-                    { type: 'value', name: '培训', splitLine: { show: false }, axisLabel: { color: '#fff' } }
-                ],
-                series: [
-                    {
-                        name: '隐患数', type: 'bar', smooth: true,
-                        data: [15, 12, 18, 10, totalDanger],
-                        itemStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'#ff6b6b'},{offset:1,color:'#faad14'}]) }
-                    },
-                    {
-                        name: '培训次数', type: 'line', yAxisIndex: 1, smooth: true,
-                        data: [2, 1, 3, 2, globalData.monthly.length], // 简单用月报数模拟
-                        lineStyle: { color: '#00d4ff', width: 3 },
-                        itemStyle: { color: '#00d4ff' },
-                        areaStyle: { opacity: 0.1, color: '#00d4ff' }
-                    }
-                ]
+                series: [{
+                    type: 'scatter', coordinateSystem: 'geo',
+                    symbolSize: (val) => 20 + val[2] * 3,
+                    data: mapData.map(item => ({
+                        name: item.name,
+                        value: item.value,
+                        itemStyle: { color: item.value[2] > 5 ? '#ff6b6b' : '#00d4ff' }
+                    })),
+                    label: { show: true, formatter: '{b}', position: 'right', color: '#fff' }
+                }]
             });
 
-            // --- 6. 雷达图 (项目类型) ---
+            // 折线图
+            charts.line.setOption({
+                tooltip: { trigger: 'axis' },
+                grid: { top: '10%', bottom: '15%', left: '10%', right: '10%' },
+                xAxis: { type: 'category', data: ['第1周', '第2周', '第3周', '第4周', '本周'], axisLine: { lineStyle: { color: '#00d4ff' } }, axisLabel: { color: '#fff' } },
+                yAxis: { type: 'value', splitLine: { lineStyle: { color: 'rgba(0,212,255,0.1)' } }, axisLabel: { color: '#fff' } },
+                series: [{
+                    name: '隐患数', type: 'line', smooth: true,
+                    data: [15, 12, 18, 10, totalDanger],
+                    lineStyle: { color: '#ffd700', width: 3 }, itemStyle: { color: '#ffd700' }
+                }]
+            });
+
+            // 雷达图
             charts.radar.setOption({
-                tooltip: {},
                 radar: {
                     indicator: [
                         { name: '人员配置', max: 100 },
@@ -527,50 +297,23 @@ async function renderMap() {
                         { name: '隐患治理', max: 100 }
                     ],
                     axisName: { color: '#00d4ff' },
-                    splitArea: { areaStyle: { color: 'rgba(0,212,255,0.05)' } },
-                    axisLine: { lineStyle: { color: 'rgba(0,212,255,0.3)' } }
+                    splitArea: { areaStyle: { color: 'rgba(0,212,255,0.05)' } }
                 },
                 series: [{
                     type: 'radar',
-                    data: [
-                        { value: [80, 90, 70, 85, rate], name: '安全指数', areaStyle: { opacity: 0.3 }, lineStyle: { color: '#00d4ff' }, itemStyle: { color: '#00d4ff' } }
-                    ]
+                    data: [{ value: [80, 90, 70, 85, rate], name: '安全指数', areaStyle: { opacity: 0.3 }, lineStyle: { color: '#00d4ff' } }]
                 }]
             });
 
-            // --- 7. 月报柱状图 ---
-            const mNames = globalData.monthly.slice(0, 5).map(m => m.project_name?.substring(0, 6) || '未知');
-            const mTrains = globalData.monthly.slice(0, 5).map(m => m.training_count || 0);
-            
-            charts.bar.setOption({
-                tooltip: { trigger: 'axis' },
-                grid: { top: '15%', bottom: '15%', left: '15%', right: '5%' },
-                xAxis: { type: 'category', data: mNames.length ? mNames : ['暂无月报'], axisLabel: { color: '#fff', interval:0, rotate:20 } },
-                yAxis: { type: 'value', splitLine: { lineStyle: { color: 'rgba(0,212,255,0.1)' } }, axisLabel: { color: '#fff' } },
-                series: [{
-                    type: 'bar',
-                    data: mTrains.length ? mTrains : [0],
-                    barWidth: '40%',
-                    itemStyle: {
-                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                            { offset: 0, color: '#00d4ff' },
-                            { offset: 1, color: '#0066cc' }
-                        ])
-                    }
-                }]
-            });
+            addMsg('✅ 数据同步完成');
         }
 
-        // 实时订阅
         function subscribeRealtime() {
             addMsg('🔗 实时通道已连接');
-            
-            // 监听周报变化
-            supabase
+            window.supabaseClient
                 .channel('public:safety_weekly_report')
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'safety_weekly_report' }, (payload) => {
-                    console.log('Realtime update:', payload);
-                    addMsg('⚡ 收到新的周报数据，自动刷新...');
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'safety_weekly_report' }, () => {
+                    addMsg('⚡ 收到新数据，自动刷新...');
                     loadAllData();
                 })
                 .subscribe();
@@ -581,9 +324,7 @@ async function renderMap() {
             const p = document.createElement('p');
             p.innerText = msg;
             list.prepend(p);
-            if(list.children.length > 5) {
-                list.removeChild(list.lastChild);
-            }
+            if(list.children.length > 5) list.removeChild(list.lastChild);
         }
     </script>
 </body>

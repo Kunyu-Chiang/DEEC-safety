@@ -25,10 +25,10 @@
     </div>
 
     <script>
-        const supabase = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
         checkSession();
         async function checkSession() {
-            const { data: { session } } = await supabase.auth.getSession();
+            if(!window.supabaseClient) return setTimeout(checkSession, 100);
+            const { data: { session } } = await window.supabaseClient.auth.getSession();
             if(session) {
                 const userStr = localStorage.getItem('user');
                 if(userStr) window.location.href = 'select.html';
@@ -42,11 +42,11 @@
             msgDiv.innerText = '';
             if(!email || !password) return msgDiv.innerText = "请输入邮箱和密码";
 
-            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            const { data, error } = await window.supabaseClient.auth.signInWithPassword({ email, password });
             if (error) {
                 msgDiv.innerText = error.message;
             } else {
-                const { data: profile } = await supabase.from('profiles').select('*, projects(*)').eq('id', data.user.id).single();
+                const { data: profile } = await window.supabaseClient.from('profiles').select('*, projects(*)').eq('id', data.user.id).single();
                 localStorage.setItem('user', JSON.stringify({ ...data.user, ...profile }));
                 window.location.href = 'select.html';
             }

@@ -55,58 +55,16 @@
             font-size: 14px;
         }
         .form-group textarea { min-height: 80px; resize: vertical; }
-        
-        /* 表格样式 */
         .table-box { width: 100%; overflow-x: auto; margin: 15px 0; border: 1px solid #e8e8e8; border-radius: 6px; }
         table { width: 100%; border-collapse: collapse; min-width: 1000px; }
-        table th, table td { border: 1px solid #ddd; padding: 8px 10px; font-size: 13px; text-align: left; vertical-align: top; }
-        table th { background: #f0f5ff; color: #003366; font-weight: 600; white-space: nowrap; }
+        table th, table td { border: 1px solid #ddd; padding: 8px 10px; font-size: 13px; text-align: left; }
+        table th { background: #f0f5ff; color: #003366; font-weight: 600; }
         table input, table select { width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 13px; }
-        
-        .table-actions { margin: 10px 0 20px 0; }
-        .add-row-btn { 
-            background: #28a745;
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .add-row-btn:hover { background: #218838; }
-        .del-row-btn {
-            background: #dc3545;
-            color: #fff;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-
+        .add-row-btn { background: #28a745; color: #fff; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; margin: 10px 0; }
+        .del-row-btn { background: #dc3545; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
         .submit-area { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 2px dashed #ddd; }
-        .submit-btn {
-            background: #0066cc;
-            color: #fff;
-            border: none;
-            padding: 15px 50px;
-            border-radius: 6px;
-            font-size: 18px;
-            cursor: pointer;
-            margin-right: 15px;
-            font-weight: bold;
-        }
-        .submit-btn:hover { background: #0055aa; }
-        .reset-btn {
-            background: #6c757d;
-            color: #fff;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 6px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        .submit-btn:disabled, .reset-btn:disabled, .add-row-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .submit-btn { background: #0066cc; color: #fff; border: none; padding: 15px 50px; border-radius: 6px; font-size: 18px; cursor: pointer; margin-right: 15px; font-weight: bold; }
+        .reset-btn { background: #6c757d; color: #fff; border: none; padding: 15px 30px; border-radius: 6px; font-size: 16px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -123,7 +81,6 @@
 
         <div style="background:#fff; padding:30px; border-radius:8px;">
             <form id="monthlyForm">
-                <!-- 一、基础信息 -->
                 <div class="section-title">一、报表基础信息</div>
                 <div class="form-row">
                     <div class="form-group"><label>项目名称</label><input type="text" id="m_projectName" readonly></div>
@@ -135,7 +92,6 @@
                     <div class="form-group"><label>填报日期</label><input type="date" id="m_reportDate" required></div>
                 </div>
 
-                <!-- 二、主表数据 -->
                 <div class="section-title">二、本月安全管理概况</div>
                 <div class="form-group">
                     <label>本月安全工作概述</label>
@@ -158,13 +114,6 @@
                 </div>
 
                 <div class="form-row">
-                    <div class="form-group"><label>安全奖励人数</label><input type="number" id="m_rewardPersonNum" min="0" value="0"></div>
-                    <div class="form-group"><label>安全奖励金额 (元)</label><input type="number" id="m_rewardAmount" min="0" step="0.01" value="0"></div>
-                    <div class="form-group"><label>安全处罚人数</label><input type="number" id="m_punishPersonNum" min="0" value="0"></div>
-                    <div class="form-group"><label>安全处罚金额 (元)</label><input type="number" id="m_punishAmount" min="0" step="0.01" value="0"></div>
-                </div>
-
-                <div class="form-row">
                     <div class="form-group"><label>培训次数</label><input type="number" id="m_trainingCount" min="0" value="0"></div>
                     <div class="form-group" style="flex:2;"><label>培训主要内容</label><input type="text" id="m_trainingContent" placeholder="简述培训内容"></div>
                     <div class="form-group"><label>培训覆盖人数</label><input type="number" id="m_trainingCoverNum" min="0" value="0"></div>
@@ -176,40 +125,6 @@
                     <div class="form-group"><label>演练覆盖人数</label><input type="number" id="m_drillCoverNum" min="0" value="0"></div>
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group"><label>相关方处罚次数</label><input type="number" id="m_contractorPunishCount" min="0" value="0"></div>
-                    <div class="form-group"><label>相关方处罚金额 (元)</label><input type="number" id="m_contractorPunishAmount" min="0" step="0.01" value="0"></div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group"><label>未遂事件数</label><input type="number" id="m_nearMissCount" min="0" value="0"></div>
-                    <div class="form-group"><label>轻伤事件数</label><input type="number" id="m_lightInjuryCount" min="0" value="0"></div>
-                    <div class="form-group"><label>轻伤人数</label><input type="number" id="m_lightInjuryPerson" min="0" value="0"></div>
-                    <div class="form-group"><label>重伤事件数</label><input type="number" id="m_severeInjuryCount" min="0" value="0"></div>
-                    <div class="form-group"><label>重伤人数</label><input type="number" id="m_severeInjuryPerson" min="0" value="0"></div>
-                    <div class="form-group"><label>死亡事件数</label><input type="number" id="m_deathCount" min="0" value="0"></div>
-                    <div class="form-group"><label>死亡人数</label><input type="number" id="m_deathPerson" min="0" value="0"></div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group"><label>本月安全投入金额 (万元)</label><input type="number" id="m_safetyInputAmount" min="0" step="0.01" value="0"></div>
-                    <div class="form-group"><label>签订合同数</label><input type="number" id="m_contractSignedCount" min="0" value="0"></div>
-                </div>
-
-                <div class="form-group">
-                    <label>管理创新与亮点</label>
-                    <textarea id="m_innovation" placeholder="请描述本月安全管理创新工作..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label>应急救援贡献</label>
-                    <textarea id="m_emergencyContribution" placeholder="请描述..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label>存在的安全问题及下月计划</label>
-                    <textarea id="m_safetyProblem" placeholder="请描述..."></textarea>
-                </div>
-
-                <!-- 附表1 -->
                 <div class="section-title">附表1：重大、重要危险源清单</div>
                 <div class="table-box">
                     <table id="table1">
@@ -220,140 +135,17 @@
                                 <th>危险源类别</th>
                                 <th>位置</th>
                                 <th>危险因素</th>
-                                <th>可能导致事故类型</th>
                                 <th>预防控制措施</th>
                                 <th>整改期限</th>
                                 <th>责任人</th>
                                 <th style="width:80px;">操作</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <!-- JS动态生成 -->
-                        </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
                 <div class="table-actions">
                     <button type="button" class="add-row-btn" onclick="addRow('table1')">+ 新增危险源</button>
-                </div>
-
-                <!-- 附表2 -->
-                <div class="section-title">附表2：安全生产隐患排查治理信息统计表</div>
-                <div class="table-box">
-                    <table id="table2" style="min-width: 1600px;">
-                        <thead>
-                            <tr>
-                                <th>序号</th>
-                                <th>单位</th>
-                                <th>项目</th>
-                                <th>检查带队人</th>
-                                <th>检查人员</th>
-                                <th>检查方式</th>
-                                <th>检查日期</th>
-                                <th>隐患描述</th>
-                                <th>隐患产生原因</th>
-                                <th>隐患类别</th>
-                                <th>隐患等级</th>
-                                <th>整改责任单位</th>
-                                <th>整改责任人</th>
-                                <th>整改期限</th>
-                                <th>整改资金(元)</th>
-                                <th>整改情况描述</th>
-                                <th>隐患是否消除</th>
-                                <th>验证人</th>
-                                <th>验证日期</th>
-                                <th>公布方式</th>
-                                <th>公布日期</th>
-                                <th>操作</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-                <div class="table-actions">
-                    <button type="button" class="add-row-btn" onclick="addRow('table2')">+ 新增隐患记录</button>
-                </div>
-
-                <!-- 附表3 -->
-                <div class="section-title">附表3：相关方安全信息统计表</div>
-                <div class="table-box">
-                    <table id="table3" style="min-width: 1400px;">
-                        <thead>
-                            <tr>
-                                <th>序号</th>
-                                <th>相关方单位名称</th>
-                                <th>合同额 (万元)</th>
-                                <th>安全许可证到期时间</th>
-                                <th>相关方总人数</th>
-                                <th>专职安全员数</th>
-                                <th>相关方负责人</th>
-                                <th>负责人有证?</th>
-                                <th>技术负责人</th>
-                                <th>技术负责人有证?</th>
-                                <th>安全负责人</th>
-                                <th>安全负责人有证?</th>
-                                <th>审核人</th>
-                                <th>审查人</th>
-                                <th>填报人</th>
-                                <th>填报日期</th>
-                                <th>操作</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-                <div class="table-actions">
-                    <button type="button" class="add-row-btn" onclick="addRow('table3')">+ 新增相关方</button>
-                </div>
-
-                <!-- 附表4 -->
-                <div class="section-title">附表4：项目安全风险管控清单</div>
-                <div class="table-box">
-                    <table id="table4" style="min-width: 1400px;">
-                        <thead>
-                            <tr>
-                                <th>序号</th>
-                                <th>单位</th>
-                                <th>项目部位</th>
-                                <th>工作内容</th>
-                                <th>作业情况描述</th>
-                                <th>风险类型</th>
-                                <th>风险等级</th>
-                                <th>预计存在时间</th>
-                                <th>是否直接判定</th>
-                                <th>判定依据</th>
-                                <th>主要控制措施</th>
-                                <th>控制单位</th>
-                                <th>控制责任人</th>
-                                <th>监督责任人</th>
-                                <th>操作</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-                <div class="table-actions">
-                    <button type="button" class="add-row-btn" onclick="addRow('table4')">+ 新增风险点</button>
-                </div>
-
-                <!-- 附表5 -->
-                <div class="section-title">附表5：安全管理工作照片/附件清单</div>
-                <div class="table-box">
-                    <table id="table5">
-                        <thead>
-                            <tr>
-                                <th>序号</th>
-                                <th>文件名称</th>
-                                <th>文件路径 (URL)</th>
-                                <th>上传日期</th>
-                                <th>文件说明</th>
-                                <th>操作</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-                <div class="table-actions">
-                    <button type="button" class="add-row-btn" onclick="addRow('table5')">+ 新增附件记录</button>
                 </div>
 
                 <div class="submit-area">
@@ -365,11 +157,9 @@
     </div>
 
     <script>
-        const supabase = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
         const user = JSON.parse(localStorage.getItem('user'));
         let isProcessing = false;
 
-        // 表格模板定义
         const tableTemplates = {
             table1: [
                 '<input type="text" class="t-input">',
@@ -377,67 +167,6 @@
                 '<input type="text" class="t-input">',
                 '<input type="text" class="t-input">',
                 '<input type="text" class="t-input">',
-                '<input type="text" class="t-input">',
-                '<input type="date" class="t-input">',
-                '<input type="text" class="t-input">'
-            ],
-            table2: [
-                '<input type="text" class="t-input">',
-                '<input type="text" class="t-input">',
-                '<input type="text" class="t-input">',
-                '<input type="text" class="t-input">',
-                '<input type="text" class="t-input">',
-                '<input type="date" class="t-input">',
-                '<input type="text" class="t-input">',
-                '<input type="text" class="t-input">',
-                '<input type="text" class="t-input">',
-                '<select class="t-input"><option>一般</option><option>较大</option><option>重大</option></select>',
-                '<input type="text" class="t-input">',
-                '<input type="text" class="t-input">',
-                '<input type="date" class="t-input">',
-                '<input type="number" class="t-input" value="0">',
-                '<input type="text" class="t-input">',
-                '<select class="t-input"><option value="true">是</option><option value="false">否</option></select>',
-                '<input type="text" class="t-input">',
-                '<input type="date" class="t-input">',
-                '<input type="text" class="t-input">',
-                '<input type="date" class="t-input">'
-            ],
-            table3: [
-                '<input type="text" class="t-input">',
-                '<input type="number" class="t-input" value="0">',
-                '<input type="date" class="t-input">',
-                '<input type="number" class="t-input" value="0">',
-                '<input type="number" class="t-input" value="0">',
-                '<input type="text" class="t-input">',
-                '<select class="t-input"><option value="true">是</option><option value="false">否</option></select>',
-                '<input type="text" class="t-input">',
-                '<select class="t-input"><option value="true">是</option><option value="false">否</option></select>',
-                '<input type="text" class="t-input">',
-                '<select class="t-input"><option value="true">是</option><option value="false">否</option></select>',
-                '<input type="text" class="t-input">',
-                '<input type="text" class="t-input">',
-                '<input type="text" class="t-input">',
-                '<input type="date" class="t-input">'
-            ],
-            table4: [
-                '<input type="text" class="t-input">',
-                '<input type="text" class="t-input">',
-                '<input type="text" class="t-input">',
-                '<input type="text" class="t-input">',
-                '<input type="text" class="t-input">',
-                '<select class="t-input"><option>低</option><option>中</option><option>高</option><option>重大</option></select>',
-                '<input type="text" class="t-input">',
-                '<select class="t-input"><option value="true">是</option><option value="false">否</option></select>',
-                '<input type="text" class="t-input">',
-                '<input type="text" class="t-input">',
-                '<input type="text" class="t-input">',
-                '<input type="text" class="t-input">',
-                '<input type="text" class="t-input">'
-            ],
-            table5: [
-                '<input type="text" class="t-input">',
-                '<input type="text" class="t-input" placeholder="https://...">',
                 '<input type="date" class="t-input">',
                 '<input type="text" class="t-input">'
             ]
@@ -448,58 +177,40 @@
             document.getElementById('currentProject').innerText = user.projects?.project_name || '';
             document.getElementById('m_projectName').value = user.projects?.project_name || '';
             document.getElementById('m_reportDate').valueAsDate = new Date();
+            addRow('table1');
             
-            // 初始化所有空表
-            ['table1','table2','table3','table4','table5'].forEach(id => addRow(id));
-
             document.getElementById('logoutBtn').onclick = async () => {
-                await supabase.auth.signOut();
+                await window.supabaseClient.auth.signOut();
                 localStorage.clear();
                 location.href='index.html';
             };
         });
 
-        // 更新序号
         function updateRowNumbers(tableId) {
             const tbody = document.querySelector(`#${tableId} tbody`);
             const rows = tbody.querySelectorAll('tr');
-            rows.forEach((row, index) => {
-                row.cells[0].textContent = index + 1;
-            });
+            rows.forEach((row, index) => row.cells[0].textContent = index + 1);
         }
 
-        // 新增行
         window.addRow = function(tableId) {
             const tbody = document.querySelector(`#${tableId} tbody`);
             const tr = document.createElement('tr');
-            
             let html = '<td>' + (tbody.children.length + 1) + '</td>';
-            const template = tableTemplates[tableId];
-            
-            template.forEach(t => {
-                html += '<td>' + t + '</td>';
-            });
-            
+            const template = tableTemplates[tableId] || [];
+            template.forEach(t => html += '<td>' + t + '</td>');
             html += `<td><button type="button" class="del-row-btn" onclick="delRow(this, '${tableId}')">删除</button></td>`;
             tr.innerHTML = html;
             tbody.appendChild(tr);
         }
 
-        // 删除行
         window.delRow = function(btn, tableId) {
             const tbody = document.querySelector(`#${tableId} tbody`);
             if(tbody.children.length <= 1) {
-                // 保留至少一行空白行
                 const inputs = tbody.querySelectorAll('input, select');
-                inputs.forEach(i => {
-                    if(i.type === 'number') i.value = 0;
-                    else if(i.tagName === 'SELECT') i.selectedIndex = 0;
-                    else i.value = '';
-                });
+                inputs.forEach(i => { if(i.type === 'number') i.value = 0; else if(i.tagName === 'SELECT') i.selectedIndex = 0; else i.value = ''; });
                 return;
             }
-            let row = btn;
-            while(row.tagName !== 'TR') row = row.parentNode;
+            let row = btn; while(row.tagName !== 'TR') row = row.parentNode;
             tbody.removeChild(row);
             updateRowNumbers(tableId);
         }
@@ -509,38 +220,32 @@
                 document.getElementById('monthlyForm').reset();
                 document.getElementById('m_projectName').value = user.projects?.project_name || '';
                 document.getElementById('m_reportDate').valueAsDate = new Date();
-                // 重置表格
-                ['table1','table2','table3','table4','table5'].forEach(id => {
-                    document.querySelector(`#${id} tbody`).innerHTML = '';
-                    addRow(id);
-                });
+                document.querySelector('#table1 tbody').innerHTML = '';
+                addRow('table1');
             }
         }
 
-        // 收集表格数据
-        function collectTableData(tableId, mainId, extraMapper = null) {
+        function collectTableData(tableId, mainId) {
             const tbody = document.querySelector(`#${tableId} tbody`);
             const rows = tbody.querySelectorAll('tr');
             const data = [];
-            
             rows.forEach((row, idx) => {
                 const inputs = row.querySelectorAll('.t-input');
-                // 简单检查：如果第一个输入框为空，视为空行跳过
-                if(inputs.length > 0 && inputs[0].value.trim() === '') return;
-
-                let rowData = {
-                    main_id: mainId,
-                    serial_number: idx + 1,
-                    project_name: user.projects?.project_name
-                };
-
-                // 使用 extraMapper 来映射字段 (需根据实际表结构微调索引)
-                // 这里为了演示简化处理，实际生产中需严格按input顺序对应数据库字段
-                if(extraMapper) {
-                    extraMapper(rowData, inputs);
+                if(inputs.length > 0 && inputs[0].value.trim() !== '') {
+                    let rowData = {
+                        main_id: mainId,
+                        serial_num: idx + 1,
+                        project_name: user.projects?.project_name,
+                        unit: inputs[0]?.value,
+                        hazard_category: inputs[1]?.value,
+                        location: inputs[2]?.value,
+                        risk_factor: inputs[3]?.value,
+                        prevention_measures: inputs[4]?.value,
+                        rectify_deadline: inputs[5]?.value,
+                        responsible_person: inputs[6]?.value
+                    };
+                    data.push(rowData);
                 }
-                
-                data.push(rowData);
             });
             return data;
         }
@@ -553,7 +258,6 @@
             submitBtn.innerText = '提交中...';
 
             try {
-                // 1. 插入主表
                 const mainData = {
                     user_id: user.id,
                     project_id: user.project_id,
@@ -570,33 +274,15 @@
                     part_time_safety_num: Number(document.getElementById('m_partTimeSafetyNum').value),
                     major_hazard_count: Number(document.getElementById('m_majorHazardCount').value),
                     important_hazard_count: Number(document.getElementById('m_importantHazardCount').value),
-                    reward_person_num: Number(document.getElementById('m_rewardPersonNum').value),
-                    reward_amount: Number(document.getElementById('m_rewardAmount').value),
-                    punish_person_num: Number(document.getElementById('m_punishPersonNum').value),
-                    punish_amount: Number(document.getElementById('m_punishAmount').value),
                     training_count: Number(document.getElementById('m_trainingCount').value),
                     training_content: document.getElementById('m_trainingContent').value,
                     training_cover_num: Number(document.getElementById('m_trainingCoverNum').value),
                     drill_count: Number(document.getElementById('m_drillCount').value),
                     drill_content: document.getElementById('m_drillContent').value,
-                    drill_cover_num: Number(document.getElementById('m_drillCoverNum').value),
-                    contractor_punish_count: Number(document.getElementById('m_contractorPunishCount').value),
-                    contractor_punish_amount: Number(document.getElementById('m_contractorPunishAmount').value),
-                    near_miss_count: Number(document.getElementById('m_nearMissCount').value),
-                    light_injury_count: Number(document.getElementById('m_lightInjuryCount').value),
-                    light_injury_person: Number(document.getElementById('m_lightInjuryPerson').value),
-                    severe_injury_count: Number(document.getElementById('m_severeInjuryCount').value),
-                    severe_injury_person: Number(document.getElementById('m_severeInjuryPerson').value),
-                    death_count: Number(document.getElementById('m_deathCount').value),
-                    death_person: Number(document.getElementById('m_deathPerson').value),
-                    safety_input_amount: Number(document.getElementById('m_safetyInputAmount').value),
-                    contract_signed_count: Number(document.getElementById('m_contractSignedCount').value),
-                    innovation: document.getElementById('m_innovation').value,
-                    emergency_contribution: document.getElementById('m_emergencyContribution').value,
-                    safety_problem: document.getElementById('m_safetyProblem').value
+                    drill_cover_num: Number(document.getElementById('m_drillCoverNum').value)
                 };
 
-                const { data: mainResult, error: mainError } = await supabase
+                const { data: mainResult, error: mainError } = await window.supabaseClient
                     .from('safety_monthly_main')
                     .insert([mainData])
                     .select('id')
@@ -605,37 +291,11 @@
                 if(mainError) throw mainError;
                 const mainId = mainResult.id;
 
-                // 2. 插入附表 (简化字段映射演示，实际需一一对应)
-                // 附表1
-                const t1Rows = collectTableData('table1', mainId, (obj, inputs) => {
-                    obj.unit = inputs[0]?.value;
-                    obj.hazard_category = inputs[1]?.value;
-                    obj.location = inputs[2]?.value;
-                    obj.risk_factor = inputs[3]?.value;
-                    obj.accident_type = inputs[4]?.value;
-                    obj.prevention_measures = inputs[5]?.value;
-                    obj.rectify_deadline = inputs[6]?.value;
-                    obj.responsible_person = inputs[7]?.value;
-                });
+                const t1Rows = collectTableData('table1', mainId);
                 if(t1Rows.length > 0) {
-                    const { error: e1 } = await supabase.from('safety_attachment1_hazard').insert(t1Rows);
+                    const { error: e1 } = await window.supabaseClient.from('safety_attachment1_hazard').insert(t1Rows);
                     if(e1) throw e1;
                 }
-
-                // 附表5 (最简单，先演示)
-                const t5Rows = collectTableData('table5', mainId, (obj, inputs) => {
-                    obj.file_name = inputs[0]?.value;
-                    obj.file_path = inputs[1]?.value;
-                    obj.upload_date = inputs[2]?.value;
-                    obj.file_info = inputs[3]?.value;
-                });
-                if(t5Rows.length > 0) {
-                    const { error: e5 } = await supabase.from('safety_attachment5_files').insert(t5Rows);
-                    if(e5) throw e5;
-                }
-
-                // 提示：附表2、3、4逻辑同上，只需按照数据库字段名写好 mapper 即可
-                // 为节省代码篇幅，这里假设表2-4已通过类似逻辑处理
 
                 alert('月报提交成功！');
                 window.location.href = 'my_history.html';

@@ -8,7 +8,7 @@
     <script src="config.js"></script>
     <style>
         body { font-family: "Microsoft YaHei", sans-serif; padding: 20px; background: #f5f7fa; margin: 0; }
-        .header { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; max-width: 1160px; margin: 0 auto 20px; }
         h2 { margin: 0; color: #003366; }
         .filters { display: flex; gap: 15px; align-items: center; }
         select { padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; }
@@ -24,7 +24,7 @@
     </style>
 </head>
 <body>
-    <div class="header" style="max-width: 1160px; margin: 0 auto 20px;">
+    <div class="header">
         <h2>📋 管理后台：周报数据汇总</h2>
         <div class="filters">
             <label>年份：</label><select id="filterYear"></select>
@@ -51,7 +51,6 @@
     </div>
 
     <script>
-        const supabase = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
         let myChart = null;
 
         function initFilters() {
@@ -81,7 +80,7 @@
             const week = document.getElementById('filterWeek').value;
             const weekStr = `${year}年第${week}周`;
 
-            const { data: reports } = await supabase.from('safety_weekly_report').select('*').like('report_week', `${weekStr}%`);
+            const { data: reports } = await window.supabaseClient.from('safety_weekly_report').select('*').like('report_week', `${weekStr}%`);
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
             

@@ -38,8 +38,6 @@
     </div>
 
     <script>
-        const supabase = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
-        
         window.addEventListener('DOMContentLoaded', () => {
             const now = new Date();
             const mStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
@@ -50,7 +48,7 @@
             const month = document.getElementById('filterMonth').value;
             if(!month) return;
 
-            const { data } = await supabase.from('safety_monthly_main').select('*').eq('report_month', month);
+            const { data } = await window.supabaseClient.from('safety_monthly_main').select('*').eq('report_month', month);
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
             

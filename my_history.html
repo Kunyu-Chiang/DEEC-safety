@@ -45,11 +45,10 @@
     </div>
 
     <script>
-        const supabase = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
         const user = JSON.parse(localStorage.getItem('user'));
+        if(!user) location.href='index.html';
 
         window.addEventListener('DOMContentLoaded', () => {
-            if(!user) location.href='index.html';
             loadWeekly();
         });
 
@@ -64,7 +63,7 @@
         async function loadWeekly() {
             const tb = document.getElementById('tb-weekly');
             tb.innerHTML = '<tr><td colspan="4" class="empty">加载中...</td></tr>';
-            const { data } = await supabase.from('safety_weekly_report').select('*').eq('user_id', user.id).order('created_at', {ascending:false});
+            const { data } = await window.supabaseClient.from('safety_weekly_report').select('*').eq('user_id', user.id).order('created_at', {ascending:false});
             tb.innerHTML = '';
             if(!data || data.length === 0) { tb.innerHTML = '<tr><td colspan="4" class="empty">暂无记录</td></tr>'; return; }
             data.forEach(r => {
@@ -77,7 +76,7 @@
         async function loadMonthly() {
             const tb = document.getElementById('tb-monthly');
             tb.innerHTML = '<tr><td colspan="4" class="empty">加载中...</td></tr>';
-            const { data } = await supabase.from('safety_monthly_main').select('*').eq('user_id', user.id).order('created_at', {ascending:false});
+            const { data } = await window.supabaseClient.from('safety_monthly_main').select('*').eq('user_id', user.id).order('created_at', {ascending:false});
             tb.innerHTML = '';
             if(!data || data.length === 0) { tb.innerHTML = '<tr><td colspan="4" class="empty">暂无记录</td></tr>'; return; }
             data.forEach(r => {

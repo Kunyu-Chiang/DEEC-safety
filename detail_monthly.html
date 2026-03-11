@@ -10,8 +10,12 @@
         .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 8px; }
         .header-bar { display: flex; justify-content: space-between; border-bottom: 2px solid #003366; padding-bottom: 15px; margin-bottom: 20px; }
         .btn-back { padding: 8px 15px; border-radius: 4px; cursor: pointer; border: 1px solid #ddd; background: #f5f5f5; }
-        .info { margin-bottom: 15px; font-size: 16px; }
-        .label { color: #666; display: inline-block; width: 100px; }
+        .info { margin-bottom: 15px; font-size: 16px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .label { color: #666; display: inline-block; width: 120px; font-weight: 500; }
+        .value { color: #333; font-weight: bold; }
+        .section { margin-top: 25px; }
+        .section h3 { border-left: 4px solid #0066cc; padding-left: 10px; color: #003366; margin-bottom: 15px; }
+        .content-box { background: #f9f9f9; padding: 15px; border-radius: 6px; line-height: 1.6; }
     </style>
 </head>
 <body>
@@ -20,24 +24,47 @@
             <h1 style="margin:0; color:#003366;">月报详情</h1>
             <button class="btn-back" onclick="history.back()">返回上一页</button>
         </div>
-        <div id="content"></div>
+        <div id="content" style="text-align:center; color:#999; padding:40px;">加载中...</div>
     </div>
 
     <script>
-        const supabase = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
         function getParam(name) { return new URLSearchParams(window.location.search).get(name); }
 
         window.addEventListener('DOMContentLoaded', async () => {
             const id = getParam('id');
-            const { data } = await supabase.from('safety_monthly_main').select('*').eq('id', id).single();
-            if(!data) { document.getElementById('content').innerText = '未找到'; return; }
+            if(!id) { document.getElementById('content').innerText = '缺少ID参数'; return; }
+            
+            const { data } = await window.supabaseClient.from('safety_monthly_main').select('*').eq('id', id).single();
+            
+            if(!data) {
+                document.getElementById('content').innerText = '未找到该月报数据';
+                return;
+            }
+
             document.getElementById('content').innerHTML = `
-                <div class="info"><span class="label">项目名称：</span> <strong>${data.project_name}</strong></div>
-                <div class="info"><span class="label">报告月份：</span> ${data.report_month}</div>
-                <div class="info"><span class="label">填报人：</span> ${data.reporter}</div>
-                <div class="info"><span class="label">培训次数：</span> ${data.training_count || 0}</div>
-                <div class="info" style="margin-top:20px;"><span class="label">工作概述：</span></div>
-                <div style="background:#f9f9f9; padding:15px; border-radius:4px; margin-top:10px;">${data.work_overview || '无'}</div>
+                <div class="info"><span class="label">项目名称：</span><span class="value">${data.project_name || '-'}</span></div>
+                <div class="info"><span class="label">报告月份：</span><span class="value">${data.report_month || '-'}</span></div>
+                <div class="info"><span class="label">填报人：</span><span class="value">${data.reporter || '-'}</span></div>
+                <div class="info"><span class="label">所属部门：</span><span class="value">${data.department || '-'}</span></div>
+                
+                <div class="section">
+                    <h3>人员配置</h3>
+                    <div class="info" style="border:none;"><span class="label">公司在册：</span>${data.company_staff_num || 0} 人</div>
+                    <div class="info" style="border:none;"><span class="label">承包商作业：</span>${data.contractor_worker_num || 0} 人</div>
+                    <div class="info" style="border:none;"><span class="label">专职安全员：</span>${data.full_time_safety_num || 0} 人</div>
+                </div>
+
+                <div class="section">
+                    <h3>培训与演练</h3>
+                    <div class="info" style="border:none;"><span class="label">培训次数：</span>${data.training_count || 0} 次</div>
+                    <div class="info" style="border:none;"><span class="label">培训内容：</span>${data.training_content || '无'}</div>
+                    <div class="info" style="border:none;"><span class="label">演练次数：</span>${data.drill_count || 0} 次</div>
+                </div>
+
+                <div class="section">
+                    <h3>本月安全工作概述</h3>
+                    <div class="content-box">${data.work_overview || '暂无内容'}</div>
+                </div>
             `;
         });
     </script>
