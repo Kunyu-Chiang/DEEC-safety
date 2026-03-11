@@ -410,58 +410,97 @@
         window.currentUser = null;
         window.supabaseClient = null;
 
-        // ========== 初始化 Supabase (从config.js读取配置) ==========
-        window.addEventListener('DOMContentLoaded', async function() {
+        // ========== 初始化 Supabase + 登录态验证 (完全沿用weekly.html逻辑) ==========
+        async function initApp() {
             try {
-                // 从config.js获取配置
+                // 1. 验证config.js配置
                 if (!window.SUPABASE_CONFIG) {
                     throw new Error('未找到Supabase配置，请检查config.js文件');
                 }
                 const { url, anonKey } = window.SUPABASE_CONFIG;
                 
-                // 初始化Supabase客户端
+                // 2. 初始化Supabase客户端
                 const { createClient } = window.supabase;
                 window.supabaseClient = createClient(url, anonKey);
-                console.log("Supabase Client initialized successfully");
-
-                // 验证登录状态
-                const userStr = localStorage.getItem('currentUser');
-                if (!userStr) {
-                    alert('未检测到登录信息，请重新登录');
-                    window.location.href = 'index.html';
-                    return;
+                
+                // 3. 优先通过Supabase Auth验证登录态 (和weekly.html保持一致)
+                const { data: { session }, error: sessionError } = await window.supabaseClient.auth.getSession();
+                
+                if (sessionError) throw sessionError;
+                if (!session) {
+                    // 降级使用localStorage验证 (兼容原有逻辑)
+                    const userStr = localStorage.getItem('currentUser');
+                    if (!userStr) {
+                        alert('未检测到登录信息，请重新登录');
+                        window.location.href = 'index.html';
+                        return;
+                    }
+                    window.currentUser = JSON.parse(userStr);
+                } else {
+                    // 从Supabase Session同步用户信息
+                    const userData = await window.supabaseClient
+                        .from('users')
+                        .select('id, username, project_name')
+                        .eq('id', session.user.id)
+                        .single();
+                    
+                    if (userData.error) throw userData.error;
+                    window.currentUser = userData.data;
+                    localStorage.setItem('currentUser', JSON.stringify(window.currentUser));
                 }
 
-                window.currentUser = JSON.parse(userStr);
+                // 4. 验证用户信息完整性
                 if (!window.currentUser.id || !window.currentUser.project_name) {
-                    throw new Error('用户信息不完整');
+                    throw new Error('用户信息不完整，请重新登录');
                 }
 
-                // 填充项目名称
+                // 5. 填充项目名称
                 document.getElementById('projectName').value = window.currentUser.project_name;
 
-                // 绑定所有事件
+                // 6. 绑定所有事件
                 bindAllEvents();
+
+                console.log('月报页面初始化成功，当前用户：', window.currentUser.username);
 
             } catch (error) {
                 console.error('初始化失败：', error);
                 alert('系统初始化失败：' + error.message);
+                // 统一跳转登录页
+                localStorage.removeItem('currentUser');
+                window.location.href = 'index.html';
             }
-        });
+        }
 
-        // ========== 事件绑定 ==========
+        // ========== 事件绑定 (和weekly.html保持一致的跳转逻辑) ==========
         function bindAllEvents() {
-            // 返回按钮
+            // 返回选择页 (和weekly.html完全一致)
             document.getElementById('backBtn').addEventListener('click', function() {
                 if (window.isProcessing) return;
+                // 保留登录态，跳转select页
                 window.location.href = 'select.html';
             });
 
-            // 退出登录
-            document.getElementById('logoutBtn').addEventListener('click', function() {
+            // 退出登录 (和weekly.html完全一致)
+            document.getElementById('logoutBtn').addEventListener('click', async function() {
                 if (window.isProcessing) return;
-                localStorage.removeItem('currentUser');
-                window.location.href = 'index.html';
+                window.isProcessing = true;
+
+                try {
+                    // 1. 退出Supabase Auth
+                    const { error } = await window.supabaseClient.auth.signOut();
+                    if (error) console.warn('退出Auth失败：', error);
+
+                    // 2. 清空localStorage
+                    localStorage.removeItem('currentUser');
+                    window.currentUser = null;
+
+                    // 3. 跳转登录页
+                    window.location.href = 'index.html';
+                } catch (err) {
+                    alert('退出登录失败：' + err.message);
+                } finally {
+                    window.isProcessing = false;
+                }
             });
 
             // 新增行按钮
@@ -838,6 +877,9 @@
                 submitBtn.disabled = false;
             }
         }
+
+        // ========== 页面加载完成后初始化 ==========
+        window.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
 </html>
