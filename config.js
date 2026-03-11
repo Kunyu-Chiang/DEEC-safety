@@ -1,7 +1,7 @@
 // config.js - 统一配置与客户端初始化
 window.SUPABASE_CONFIG = {
     // 请在此处填入你的真实 Supabase 信息
-    url: 'https://https://zmbxpsbxxjrsdzyvtiyi.supabase.co',
+    url: 'https://zmbxpsbxxjrsdzyvtiyi.supabase.co',
     anonKey: 'sb_publishable_7zW8CxAae1sFTxNLqaSjTA_nkCkzD8T'
 };
 
