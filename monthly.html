@@ -410,7 +410,7 @@
         window.currentUser = null;
         window.supabaseClient = null;
 
-        // ========== 初始化 Supabase + 登录态验证 (完全沿用weekly.html逻辑) ==========
+        // ========== 初始化 Supabase + 登录态验证 (适配profiles/projects表) ==========
         async function initApp() {
             try {
                 // 1. 验证config.js配置
@@ -423,12 +423,12 @@
                 const { createClient } = window.supabase;
                 window.supabaseClient = createClient(url, anonKey);
                 
-                // 3. 优先通过Supabase Auth验证登录态 (和weekly.html保持一致)
+                // 3. 优先通过Supabase Auth验证登录态
                 const { data: { session }, error: sessionError } = await window.supabaseClient.auth.getSession();
                 
                 if (sessionError) throw sessionError;
                 if (!session) {
-                    // 降级使用localStorage验证 (兼容原有逻辑)
+                    // 降级使用localStorage验证
                     const userStr = localStorage.getItem('currentUser');
                     if (!userStr) {
                         alert('未检测到登录信息，请重新登录');
@@ -437,25 +437,54 @@
                     }
                     window.currentUser = JSON.parse(userStr);
                 } else {
-                    // 从Supabase Session同步用户信息
-                    const userData = await window.supabaseClient
-                        .from('users')
-                        .select('id, username, project_name')
+                    // 从profiles表获取用户信息 (替换原来的users表)
+                    const profileData = await window.supabaseClient
+                        .from('profiles')
+                        .select('id, username, role, project_id')
                         .eq('id', session.user.id)
                         .single();
                     
-                    if (userData.error) throw userData.error;
-                    window.currentUser = userData.data;
+                    if (profileData.error) throw profileData.error;
+                    
+                    // 从projects表获取项目名称
+                    let projectName = '';
+                    if (profileData.data.project_id) {
+                        const projectData = await window.supabaseClient
+                            .from('projects')
+                            .select('project_name')
+                            .eq('id', profileData.data.project_id)
+                            .single();
+                        
+                        if (!projectData.error) {
+                            projectName = projectData.data.project_name;
+                        }
+                    }
+                    
+                    // 组装用户信息
+                    window.currentUser = {
+                        id: profileData.data.id,
+                        username: profileData.data.username,
+                        role: profileData.data.role,
+                        project_id: profileData.data.project_id,
+                        project_name: projectName
+                    };
+                    
+                    // 保存到localStorage
                     localStorage.setItem('currentUser', JSON.stringify(window.currentUser));
                 }
 
                 // 4. 验证用户信息完整性
-                if (!window.currentUser.id || !window.currentUser.project_name) {
+                if (!window.currentUser.id) {
                     throw new Error('用户信息不完整，请重新登录');
                 }
 
-                // 5. 填充项目名称
-                document.getElementById('projectName').value = window.currentUser.project_name;
+                // 5. 填充项目名称 (如果未配置项目，提示用户)
+                if (window.currentUser.project_name) {
+                    document.getElementById('projectName').value = window.currentUser.project_name;
+                } else {
+                    document.getElementById('projectName').value = '未配置项目';
+                    alert('当前用户未绑定项目，请联系管理员配置！');
+                }
 
                 // 6. 绑定所有事件
                 bindAllEvents();
@@ -471,16 +500,15 @@
             }
         }
 
-        // ========== 事件绑定 (和weekly.html保持一致的跳转逻辑) ==========
+        // ========== 事件绑定 ==========
         function bindAllEvents() {
-            // 返回选择页 (和weekly.html完全一致)
+            // 返回选择页
             document.getElementById('backBtn').addEventListener('click', function() {
                 if (window.isProcessing) return;
-                // 保留登录态，跳转select页
                 window.location.href = 'select.html';
             });
 
-            // 退出登录 (和weekly.html完全一致)
+            // 退出登录
             document.getElementById('logoutBtn').addEventListener('click', async function() {
                 if (window.isProcessing) return;
                 window.isProcessing = true;
@@ -602,7 +630,7 @@
 
             // 重置主表单
             document.getElementById('monthlyForm').reset();
-            document.getElementById('projectName').value = window.currentUser?.project_name || '';
+            document.getElementById('projectName').value = window.currentUser?.project_name || '未配置项目';
 
             // 重置所有表格为初始状态
             const tableConfigs = [
@@ -645,7 +673,7 @@
             alert('表单已清空！');
         }
 
-        // ========== 提交月报数据 ==========
+        // ========== 提交月报数据 (适配表结构) ==========
         async function submitMonthlyForm() {
             if (window.isProcessing) return;
             window.isProcessing = true;
@@ -661,10 +689,11 @@
                     throw new Error('请填写所有必填项！');
                 }
 
-                // 1. 收集主表数据
+                // 1. 收集主表数据 (增加project_id字段)
                 const mainData = {
                     user_id: window.currentUser.id,
-                    project_name: window.currentUser.project_name,
+                    project_id: window.currentUser.project_id || null,
+                    project_name: window.currentUser.project_name || '未配置项目',
                     department: document.getElementById('department').value.trim(),
                     report_month: document.getElementById('reportMonth').value,
                     reporter: document.getElementById('reporter').value.trim(),
@@ -727,7 +756,7 @@
                     const inputs = tr.querySelectorAll('.att1');
                     att1Data.push({
                         main_id: mainId,
-                        project_name: window.currentUser.project_name,
+                        project_name: window.currentUser.project_name || '未配置项目',
                         serial_num: parseInt(tr.cells[0].textContent),
                         unit: inputs[0].value.trim(),
                         hazard_category: inputs[1].value,
@@ -736,7 +765,8 @@
                         accident_type: inputs[4].value,
                         prevention_measures: inputs[5].value.trim(),
                         rectify_deadline: inputs[6].value,
-                        responsible_person: inputs[7].value.trim()
+                        responsible_person: inputs[7].value.trim(),
+                        created_at: new Date().toISOString() // 增加创建时间字段
                     });
                 });
 
@@ -746,7 +776,7 @@
                     const inputs = tr.querySelectorAll('.att2');
                     att2Data.push({
                         main_id: mainId,
-                        project_name: window.currentUser.project_name,
+                        project_name: window.currentUser.project_name || '未配置项目',
                         serial_num: parseInt(tr.cells[0].textContent),
                         company: inputs[0].value.trim(),
                         project: inputs[1].value.trim(),
@@ -767,7 +797,8 @@
                         verifier: inputs[16].value.trim(),
                         verify_date: inputs[17].value,
                         publish_method: inputs[18].value.trim(),
-                        publish_date: inputs[19].value
+                        publish_date: inputs[19].value,
+                        created_at: new Date().toISOString() // 增加创建时间字段
                     });
                 });
 
@@ -777,7 +808,7 @@
                     const inputs = tr.querySelectorAll('.att3');
                     att3Data.push({
                         main_id: mainId,
-                        project_name: window.currentUser.project_name,
+                        project_name: window.currentUser.project_name || '未配置项目',
                         serial_num: parseInt(tr.cells[0].textContent),
                         partner_name: inputs[0].value.trim(),
                         contract_amount: parseFloat(inputs[1].value) || 0,
@@ -793,7 +824,8 @@
                         approver: inputs[11].value.trim(),
                         reviewer: inputs[12].value.trim(),
                         reporter: inputs[13].value.trim(),
-                        report_date: inputs[14].value
+                        report_date: inputs[14].value,
+                        created_at: new Date().toISOString() // 增加创建时间字段
                     });
                 });
 
@@ -803,7 +835,7 @@
                     const inputs = tr.querySelectorAll('.att4');
                     att4Data.push({
                         main_id: mainId,
-                        project_name: window.currentUser.project_name,
+                        project_name: window.currentUser.project_name || '未配置项目',
                         serial_num: parseInt(tr.cells[0].textContent),
                         company: inputs[0].value.trim(),
                         project_part: inputs[1].value.trim(),
@@ -817,7 +849,8 @@
                         key_control_measures: inputs[9].value.trim(),
                         control_company: inputs[10].value.trim(),
                         control_person: inputs[11].value.trim(),
-                        supervise_person: inputs[12].value.trim()
+                        supervise_person: inputs[12].value.trim(),
+                        created_at: new Date().toISOString() // 增加创建时间字段
                     });
                 });
 
@@ -829,12 +862,13 @@
                     
                     att5Data.push({
                         main_id: mainId,
-                        project_name: window.currentUser.project_name,
+                        project_name: window.currentUser.project_name || '未配置项目',
                         serial_num: parseInt(tr.cells[0].textContent),
                         file_name: inputs[0].value.trim(),
                         file_path: '', // 文件上传功能可后续扩展
                         upload_date: inputs[1].value,
-                        file_info: fileInput.files.length > 0 ? fileInput.files[0].name : ''
+                        file_info: fileInput.files.length > 0 ? fileInput.files[0].name : '',
+                        created_at: new Date().toISOString() // 增加创建时间字段
                     });
                 });
 
